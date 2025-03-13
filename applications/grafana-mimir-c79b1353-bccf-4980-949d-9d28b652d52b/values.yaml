@@ -1,0 +1,4 @@
+networkPolicy:
+  allowExternal: true
+  allowExternalEgress: true
+  enabled: true
