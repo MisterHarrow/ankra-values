@@ -1,0 +1,8 @@
+externalDatabase:
+  database: mastodon
+  existingSecret: ''
+  existingSecretPasswordKey: db-password
+  host: ''
+  password: ''
+  port: 5432
+  user: postgres
