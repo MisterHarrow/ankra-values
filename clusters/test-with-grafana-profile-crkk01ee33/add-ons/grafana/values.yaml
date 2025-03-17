@@ -1,0 +1,9 @@
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  enabled: true
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+  seLinuxOptions: {}
