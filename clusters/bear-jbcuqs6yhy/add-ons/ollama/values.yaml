@@ -94,9 +94,10 @@ ollama:
   insecure: false
   models:
     create: []
-    pull: &id001
+    pull:
     - deepseek-coder
-    run: *id001
+    run:
+    - deepseek-coder
   mountPath: ''
   port: 11434
 persistentVolume:
