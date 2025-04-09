@@ -10,39 +10,39 @@ extraArgs: []
 extraEnv: []
 extraEnvFrom: []
 extraObjects:
-  - apiVersion: v1
-    kind: Service
-    metadata:
-      name: open-webui
-    spec:
-      ports:
-        - port: 8080
-          protocol: TCP
-          targetPort: 8080
-      selector:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: open-webui
+  spec:
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: open-webui
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: open-webui
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
         app: open-webui
-  - apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: open-webui
-    spec:
-      replicas: 1
-      selector:
-        matchLabels:
+    template:
+      metadata:
+        labels:
           app: open-webui
-      template:
-        metadata:
-          labels:
-            app: open-webui
-        spec:
-          containers:
-            - env:
-                - name: OLLAMA_BASE_URL
-                  value: http://ollama:11434
-              image: ghcr.io/open-webui/open-webui:main
-              name: open-webui
-              ports:
-                - containerPort: 8080
+      spec:
+        containers:
+        - env:
+          - name: OLLAMA_BASE_URL
+            value: http://ollama:11434
+          image: ghcr.io/open-webui/open-webui:main
+          name: open-webui
+          ports:
+          - containerPort: 8080
 fullnameOverride: ''
 hostIPC: false
 hostNetwork: false
@@ -57,10 +57,10 @@ ingress:
   className: ''
   enabled: false
   hosts:
-    - host: ollama.local
-      paths:
-        - path: /
-          pathType: Prefix
+  - host: ollama.local
+    paths:
+    - path: /
+      pathType: Prefix
   tls: []
 initContainers: []
 knative:
@@ -94,15 +94,14 @@ ollama:
   insecure: false
   models:
     create: []
-    pull: #Template: model
-      - deepseek-coder
-    run: #Template: model
-      - deepseek-coder
+    pull: &id001
+    - deepseek-coder
+    run: *id001
   mountPath: ''
   port: 11434
 persistentVolume:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   annotations: {}
   enabled: false
   existingClaim: ''
