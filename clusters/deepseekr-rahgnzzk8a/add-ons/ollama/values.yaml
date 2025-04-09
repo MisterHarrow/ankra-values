@@ -1,0 +1,7 @@
+models:
+  create:
+  - DeepSeek-R1
+  pull:
+  - DeepSeek-R1
+  run:
+  - DeepSeek-R1
