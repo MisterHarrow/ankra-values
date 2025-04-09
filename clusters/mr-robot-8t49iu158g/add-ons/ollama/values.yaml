@@ -1,0 +1,5 @@
+models:
+  create: &id001
+  - DeepSeek-R1
+  pull: *id001
+  run: *id001
