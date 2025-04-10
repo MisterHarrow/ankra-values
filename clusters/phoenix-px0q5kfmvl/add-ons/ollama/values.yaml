@@ -1,0 +1,4 @@
+models:
+  pull: &id001
+  - deepseek-coder
+  run: *id001
