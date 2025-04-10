@@ -1,0 +1,85 @@
+affinity: {}
+fullnameOverride: ''
+global:
+  librechat:
+    existingSecretApiKey: ''
+    existingSecretName: librechat-credentials-env
+image:
+  pullPolicy: IfNotPresent
+  registry: ghcr.io
+  repository: danny-avila/librechat
+  tag: ''
+imagePullSecrets: []
+ingress:
+  annotations: {}
+  className: ''
+  enabled: true
+  hosts:
+  - host: chart-example.local
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls: []
+librechat:
+  configEnv:
+    CREDS_IV: ac028c86ba23f4cd48165e0ca9f2c683
+    CREDS_KEY: 9e95d9894da7e68dd69c0046caf5343c8b1e80c89609b5a1e40e6568b5b23ce6
+    DEBUG_PLUGINS: 'true'
+    DEFAULT_ADMIN_PASSWORD: admin
+    DEFAULT_ADMIN_USERNAME: admin
+    JWT_REFRESH_SECRET: eaa5191f2914e30b9387fd84e254e4ba6fc51b4654968a9b0803b456a54b8418
+    JWT_SECRET: 16f8c0ef4a5d391b26034086c628469d3f9f497f08163ab9b40137092f2909ef
+    PLUGIN_MODELS: deepseek-coder
+  configYamlContent: "endpoints:\n  custom:\n    - name: \"Ollama\"\n      apiKey:\
+    \ \"\"\n      baseURL: \"http://ollama:11434\"\n      models:\n        default:\
+    \ [\"deepseek-coder\"]\n        fetch: false\n      titleConvo: true\n      titleModel:\
+    \ \"deepseek-coder\"\n      summarize: false\n      forcePrompt: false\n     \
+    \ modelDisplayLabel: \"Deepseek (Ollama)\"\n"
+  existingConfigYaml: ''
+  existingSecretName: librechat-credentials-env
+  imageVolume:
+    accessModes: ReadWriteOnce
+    enabled: true
+    size: 10G
+librechat-rag-api:
+  embeddingsProvider: openai
+  enabled: false
+lifecycle: {}
+meilisearch:
+  auth:
+    existingMasterKeySecret: librechat-credentials-env
+  enabled: true
+  image:
+    tag: v1.7.3
+  persistence:
+    enabled: true
+    storageClass: ''
+mongodb:
+  auth:
+    enabled: false
+  databases:
+  - LibreChat
+  enabled: true
+nameOverride: ''
+nodeSelector: {}
+podAnnotations: {}
+podLabels: {}
+podSecurityContext:
+  fsGroup: 2000
+replicaCount: 1
+resources: {}
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+service:
+  annotations: {}
+  port: 3080
+  type: ClusterIP
+tolerations: []
+updateStrategy:
+  type: RollingUpdate
+volumeMounts: []
+volumes: []
