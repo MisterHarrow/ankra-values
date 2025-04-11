@@ -6,7 +6,9 @@ global:
     existingSecretName: librechat-credentials-env
 
 image:
-  pullPolicy: IfNotPresent
+  pullPolicy: IfNotPresentasd
+
+  
   registry: ghcr.io
   repository: danny-avila/librechat
   tag: ''
