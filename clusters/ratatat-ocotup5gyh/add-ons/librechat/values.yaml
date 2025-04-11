@@ -25,14 +25,16 @@ librechat:
     CREDS_IV: ac028c86ba23f4cd48165e0ca9f2c683
     CREDS_KEY: 9e95d9894da7e68dd69c0046caf5343c8b1e80c89609b5a1e40e6568b5b23ce6
     DEBUG_PLUGINS: 'true'
+    DEFAULT_ADMIN_PASSWORD: adminadmin
+    DEFAULT_ADMIN_USERNAME: admin@admin.com
     JWT_REFRESH_SECRET: eaa5191f2914e30b9387fd84e254e4ba6fc51b4654968a9b0803b456a54b8418
     JWT_SECRET: 16f8c0ef4a5d391b26034086c628469d3f9f497f08163ab9b40137092f2909ef
     PLUGIN_MODELS: deepseek-coder
-  configYamlContent: "endpoints:\n  custom:\n    - name: \"Ollama\"\n      apiKey:\
-    \ \"\"\n      baseURL: \"http://ollama:11434\"\n      models:\n        default:\
-    \ [\"deepseek-coder\"]\n        fetch: false\n      titleConvo: true\n      titleModel:\
-    \ \"deepseek-coder\"\n      summarize: false\n      forcePrompt: false\n     \
-    \ modelDisplayLabel: \"Deepseek (Ollama)\"\n"
+  configYamlContent: "version: \"1.0.3\"\nendpoints:\n  custom:\n    - name: \"Ollama\"\
+    \n      apiKey: \"\"\n      baseURL: \"http://ollama:11434\"\n      models:\n\
+    \        default: [\"deepseek-coder\"]\n        fetch: false\n      titleConvo:\
+    \ true\n      titleModel: \"deepseek-coder\"\n      summarize: false\n      forcePrompt:\
+    \ false\n      modelDisplayLabel: \"Deepseek (Ollama)\"\n"
   existingConfigYaml: ''
   existingSecretName: librechat-credentials-env
   imageVolume:
