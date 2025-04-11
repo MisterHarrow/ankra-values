@@ -50,4 +50,4 @@ librechat:
           titleModel: "deepseek-coder"
           summarize: false
           forcePrompt: false
-          modelDisplayLabel: "Deepseek (Ollama)
+          modelDisplayLabel: "Deepseek (Ollama)"
