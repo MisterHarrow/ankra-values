@@ -1,0 +1,7 @@
+loki:
+  storage:
+    type: filesystem
+  persistence:
+    enabled: true
+    storageClassName: ebs-sc # or your actual storage class
+    size: 10Gi
