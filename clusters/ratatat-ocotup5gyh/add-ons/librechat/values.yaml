@@ -3,13 +3,12 @@ replicaCount: 1
 global:
   librechat:
     existingSecretName: "librechat-credentials-env"
+    existingSecretApiKey: OPENAI_API_KEY
 
 librechat:
   configEnv:
     # This value triggers per-user mode for OpenAI API keys.
     # Users must later provide their own key in the UI (if the UI supports it).
-    OPENAI_API_KEY: "user_provided"
-    PLUGIN_MODELS: gpt-4,gpt-4-turbo-preview,gpt-4-0125-preview,gpt-4-1106-preview,gpt-4-0613,gpt-3.5-turbo,gpt-3.5-turbo-0125,gpt-3.5-turbo-1106,gpt-3.5-turbo-0613
     DEBUG_PLUGINS: "true"
     CREDS_KEY: 9e95d9894da7e68dd69c0046caf5343c8b1e80c89609b5a1e40e6568b5b23ce6
     CREDS_IV: ac028c86ba23f4cd48165e0ca9f2c683
