@@ -22,15 +22,17 @@ librechat:
     endpoints:
       custom:
         - name: "Ollama"
-          baseURL: "http://ollama:11434"
+          apiKey: "ollama"  # dummy value required by LibreChat
+          baseURL: "http://ollama:11434/v1/chat/completions"
           models:
             default: ["deepseek-coder"]
-            fetch: "false"
-          userIdQuery: "false"
-          titleConvo: "true"
-          titleModel: "deepseek-coder"
-          summarize: "false"
-          forcePrompt: "false"
+            fetch: false
+          userIdQuery: false
+          titleConvo: true
+          titleModel: "current_model"
+          summarize: false
+          summaryModel: "current_model"
+          forcePrompt: false
           modelDisplayLabel: "Deepseek (Ollama)"
   existingSecretName: "librechat-credentials-env"
 
@@ -108,4 +110,3 @@ meilisearch:
     tag: "v1.7.3"
   auth:
     existingMasterKeySecret: "librechat-credentials-env"
-
