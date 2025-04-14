@@ -20,6 +20,10 @@ librechat:
   configYamlContent: |
     version: "1.0.3"
     endpoints:
+      openAI:
+        models:
+          default: ["gpt-3.5-turbo", "gpt-4"]
+          fetch: true
       custom:
         - name: "Ollama"
           apiKey: "ollama"  # dummy value required by LibreChat
