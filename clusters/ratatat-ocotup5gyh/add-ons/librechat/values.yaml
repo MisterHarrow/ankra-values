@@ -18,6 +18,7 @@ librechat:
     ALLOW_REGISTRATION: "true"
     ALLOW_EMAIL_LOGIN: "true"
     ALLOW_SOCIAL_LOGIN: "true"
+  
 
     # Set Config Params here
     # ENV_NAME: env-value
