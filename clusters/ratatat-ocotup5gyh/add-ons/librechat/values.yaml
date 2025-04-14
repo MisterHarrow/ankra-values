@@ -4,6 +4,7 @@ global:
   librechat:
     existingSecretName: "librechat-credentials-env"
     existingSecretApiKey: OPENAI_API_KEY
+    existingSecretGoogleApiKey: GOOGLE_API_KEY
 
 librechat:
   configEnv:
