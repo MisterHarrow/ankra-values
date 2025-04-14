@@ -9,40 +9,7 @@ deployment:
 extraArgs: []
 extraEnv: []
 extraEnvFrom: []
-extraObjects:
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: open-webui
-  spec:
-    ports:
-    - port: 8080
-      protocol: TCP
-      targetPort: 8080
-    selector:
-      app: open-webui
-- apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: open-webui
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
-        app: open-webui
-    template:
-      metadata:
-        labels:
-          app: open-webui
-      spec:
-        containers:
-        - env:
-          - name: OLLAMA_BASE_URL
-            value: http://ollama:11434
-          image: ghcr.io/open-webui/open-webui:main
-          name: open-webui
-          ports:
-          - containerPort: 8080
+extraObjects: []
 fullnameOverride: ''
 hostIPC: false
 hostNetwork: false
@@ -96,6 +63,7 @@ ollama:
     create: []
     pull: &id001
     - deepseek-coder
+    - gemma2
     run: *id001
   mountPath: ''
   port: 11434
