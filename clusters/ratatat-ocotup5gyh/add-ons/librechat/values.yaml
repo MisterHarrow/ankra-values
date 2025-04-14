@@ -6,7 +6,8 @@ global:
 
 librechat:
   configEnv:
-    # Add this line to force per-user keys:
+    # This value triggers per-user mode for OpenAI API keys.
+    # Users must later provide their own key in the UI (if the UI supports it).
     OPENAI_API_KEY: "user_provided"
     PLUGIN_MODELS: gpt-4,gpt-4-turbo-preview,gpt-4-0125-preview,gpt-4-1106-preview,gpt-4-0613,gpt-3.5-turbo,gpt-3.5-turbo-0125,gpt-3.5-turbo-1106,gpt-3.5-turbo-0613
     DEBUG_PLUGINS: "true"
@@ -19,7 +20,7 @@ librechat:
     ALLOW_EMAIL_LOGIN: "true"
     ALLOW_SOCIAL_LOGIN: "true"
   configYamlContent: |
-    version: "1.0.3"
+    version: "1.2.1"
     endpoints:
       openAI:
         models:
@@ -27,7 +28,7 @@ librechat:
           fetch: true
       custom:
         - name: "Ollama"
-          apiKey: "ollama"  # dummy value required by LibreChat
+          apiKey: "ollama"  # Dummy value required by LibreChat; not actually used by Ollama.
           baseURL: "http://ollama:11434/v1/chat/completions"
           models:
             default: ["deepseek-coder"]
@@ -45,7 +46,7 @@ image:
   repository: danny-avila/librechat
   registry: ghcr.io
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "latest"   # You may specify an explicit version tag if desired.
 
 imagePullSecrets: []
 
