@@ -26,6 +26,7 @@ librechat:
           models:
             default: ["deepseek-coder"]
             fetch: false
+          userIdQuery: false
           titleConvo: true
           titleModel: "deepseek-coder"
           summarize: false
