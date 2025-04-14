@@ -25,12 +25,12 @@ librechat:
           baseURL: "http://ollama:11434"
           models:
             default: ["deepseek-coder"]
-            fetch: false
-          userIdQuery: false
-          titleConvo: true
+            fetch: "false"
+          userIdQuery: "false"
+          titleConvo: "true"
           titleModel: "deepseek-coder"
-          summarize: false
-          forcePrompt: false
+          summarize: "false"
+          forcePrompt: "false"
           modelDisplayLabel: "Deepseek (Ollama)"
   existingSecretName: "librechat-credentials-env"
 
