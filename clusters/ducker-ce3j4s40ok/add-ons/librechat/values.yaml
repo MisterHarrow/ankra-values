@@ -39,6 +39,7 @@ librechat:
           summarize: false
           summaryModel: "current_model"
           forcePrompt: false
+          modelDisplayLabel: "current_model"
   existingSecretName: "librechat-credentials-env"
 
 image:
