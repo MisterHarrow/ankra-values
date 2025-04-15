@@ -1,0 +1,115 @@
+affinity: {}
+autoscaling:
+  enabled: false
+  maxReplicas: 100
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+deployment:
+  labels: {}
+extraArgs: []
+extraEnv: []
+extraEnvFrom: []
+extraObjects: []
+fullnameOverride: ''
+hostIPC: false
+hostNetwork: false
+hostPID: false
+image:
+  pullPolicy: IfNotPresent
+  repository: ollama/ollama
+  tag: ''
+imagePullSecrets: []
+ingress:
+  annotations: {}
+  className: ''
+  enabled: false
+  hosts:
+  - host: ollama.local
+    paths:
+    - path: /
+      pathType: Prefix
+  tls: []
+initContainers: []
+knative:
+  annotations: {}
+  containerConcurrency: 0
+  enabled: false
+  idleTimeoutSeconds: 300
+  responseStartTimeoutSeconds: 300
+  timeoutSeconds: 300
+lifecycle: {}
+livenessProbe:
+  enabled: true
+  failureThreshold: 6
+  initialDelaySeconds: 60
+  path: /
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
+nameOverride: ''
+namespaceOverride: ''
+nodeSelector: {}
+ollama:
+  gpu:
+    enabled: false
+    mig:
+      devices: {}
+      enabled: false
+    number: 1
+    nvidiaResource: nvidia.com/gpu
+    type: nvidia
+  insecure: false
+  models:
+    create: []
+    pull: &id001
+    - deepseek-coder
+    - gemma2
+    run: *id001
+  mountPath: ''
+  port: 11434
+persistentVolume:
+  accessModes:
+  - ReadWriteOnce
+  annotations: {}
+  enabled: false
+  existingClaim: ''
+  size: 30Gi
+  storageClass: ''
+  subPath: ''
+  volumeMode: ''
+  volumeName: ''
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+readinessProbe:
+  enabled: true
+  failureThreshold: 6
+  initialDelaySeconds: 30
+  path: /
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+replicaCount: 1
+resources:
+  limits: {}
+  requests: {}
+runtimeClassName: ''
+securityContext: {}
+service:
+  annotations: {}
+  labels: {}
+  loadBalancerIP: null
+  nodePort: 31434
+  port: 11434
+  type: ClusterIP
+serviceAccount:
+  annotations: {}
+  automount: true
+  create: true
+  name: ''
+tolerations: []
+topologySpreadConstraints: {}
+updateStrategy:
+  type: Recreate
+volumeMounts: []
+volumes: []
