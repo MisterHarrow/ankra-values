@@ -26,6 +26,10 @@ librechat:
         models:
           default: ["gpt-3.5-turbo", "gpt-4"]
           fetch: true
+      google:
+        models:
+          default: ["gemini-1.5-pro-latest"]
+          fetch: true
       custom:
         - name: "Ollama"
           apiKey: "ollama"  # Dummy value required by LibreChat; not actually used by Ollama.
