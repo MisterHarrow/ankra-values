@@ -31,7 +31,7 @@ librechat:
           apiKey: "ollama"  # Dummy value required by LibreChat; not actually used by Ollama.
           baseURL: "http://ollama:11434/v1/chat/completions"
           models:
-            default: ["deepseek-coder"]
+            default: ["deepseek-coder", "gemma2"]
             fetch: false
           userIdQuery: false
           titleConvo: true
