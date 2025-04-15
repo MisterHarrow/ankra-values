@@ -39,7 +39,6 @@ librechat:
           summarize: false
           summaryModel: "current_model"
           forcePrompt: false
-          modelDisplayLabel: "Deepseek (Ollama)"
   existingSecretName: "librechat-credentials-env"
 
 image:
