@@ -3,7 +3,7 @@ fullnameOverride: ''
 global:
   librechat:
     existingSecretApiKey: OPENAI_API_KEY
-    existingSecretGoogleApiKey: GOOGLE_API_KEY
+    existingSecretGoogleApiKey: GOOGLE_KEY
     existingSecretName: librechat-credentials-env
 image:
   pullPolicy: IfNotPresent
@@ -14,7 +14,7 @@ imagePullSecrets: []
 ingress:
   annotations: {}
   className: ''
-  enabled: true
+  enabled: false
   hosts:
   - host: chart-example.local
     paths:
@@ -33,13 +33,14 @@ librechat:
     JWT_REFRESH_SECRET: eaa5191f2914e30b9387fd84e254e4ba6fc51b4654968a9b0803b456a54b8418
     JWT_SECRET: 16f8c0ef4a5d391b26034086c628469d3f9f497f08163ab9b40137092f2909ef
   configYamlContent: "version: \"1.2.1\"\nendpoints:\n  openAI:\n    models:\n   \
-    \   default: [\"gpt-3.5-turbo\", \"gpt-4\"]\n      fetch: true\n  custom:\n  \
-    \  - name: \"Ollama\"\n      apiKey: \"ollama\"  # Dummy value required by LibreChat;\
+    \   default: [\"gpt-3.5-turbo\", \"gpt-4\"]\n      fetch: true\n  google:\n  \
+    \  models:\n      default: [\"gemini-1.5-pro-latest\"]\n      fetch: true\n  custom:\n\
+    \    - name: \"Ollama\"\n      apiKey: \"ollama\"  # Dummy value required by LibreChat;\
     \ not actually used by Ollama.\n      baseURL: \"http://ollama:11434/v1/chat/completions\"\
-    \n      models:\n        default: [\"deepseek-coder\"]\n        fetch: false\n\
-    \      userIdQuery: false\n      titleConvo: true\n      titleModel: \"current_model\"\
-    \n      summarize: false\n      summaryModel: \"current_model\"\n      forcePrompt:\
-    \ false\n      modelDisplayLabel: \"Deepseek (Ollama)\"\n"
+    \n      models:\n        default: [\"deepseek-coder\", \"gemma2\"]\n        fetch:\
+    \ false\n      userIdQuery: false\n      titleConvo: true\n      titleModel: \"\
+    current_model\"\n      summarize: false\n      summaryModel: \"current_model\"\
+    \n      forcePrompt: false\n      modelDisplayLabel: \"current_model\"\n"
   existingSecretName: librechat-credentials-env
 librechat-rag-api:
   embeddingsProvider: openai
