@@ -1,0 +1,3 @@
+gpu:
+    # -- Enable GPU integration
+    enabled: true
