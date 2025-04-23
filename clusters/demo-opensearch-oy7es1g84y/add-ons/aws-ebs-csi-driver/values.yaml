@@ -1,0 +1,10 @@
+defaultStorageClass:
+  enabled: true
+storageClasses:
+- annotations:
+    storageclass.kubernetes.io/is-default-class: 'true'
+  name: ebs-sc
+  parameters:
+    encrypted: 'true'
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
