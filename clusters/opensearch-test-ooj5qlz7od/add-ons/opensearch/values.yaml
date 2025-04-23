@@ -108,7 +108,7 @@ extraEnvs:
 # Chart version 2.18.0 and App Version OpenSearch 2.12.0 onwards a custom strong password needs to be provided in order to setup demo admin user.
 # Cluster will not spin-up without this unless demo config install is disabled.
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: Asdfasdf1!
+    value: Asdfasdf1!#
 
 # Allows you to load environment variables from kubernetes secret or config map
 envFrom: []
@@ -148,7 +148,7 @@ opensearchJavaOpts: "-Xmx512M -Xms512M"
 resources:
   requests:
     cpu: "1000m"
-    memory: "100Mi"
+    memory: "1000Mi"
 
 initResources: {}
 #  limits:
