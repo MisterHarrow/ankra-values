@@ -417,7 +417,7 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
-        Name opensearch
+        Name es
         Match *
         Host opensearch-cluster-master
         Port 9200
