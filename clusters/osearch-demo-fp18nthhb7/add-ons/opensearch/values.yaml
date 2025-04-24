@@ -1,3 +1,0 @@
-extraEnvs:
-  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: B3n_jamin!###
