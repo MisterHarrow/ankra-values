@@ -105,7 +105,7 @@ config:
     opensearch.hosts: ["{{ .Values.opensearchHosts }}"]
     opensearch.ssl.verificationMode: none
     opensearch.username: "admin"
-    opensearch.password: "AsdfLosen0rd!+"
+    opensearch.password: "C)Ph]Y\\/&OP6qns%"
 
 
   # Dashboards TLS Config (Ensure the cert files are present before enabling SSL
