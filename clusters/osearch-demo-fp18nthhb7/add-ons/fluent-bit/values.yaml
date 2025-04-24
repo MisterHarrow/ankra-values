@@ -1,4 +1,0 @@
-outputs: "[OUTPUT]\n    Name es\n    Match *\n    Host opensearch-cluster-master\n\
-  \    Port 9200\n    TLS On\n    tls.verify Off\n    HTTP_User admin\n    HTTP_Passwd\
-  \ B3njamin!!\n    Logstash_Format On\n    Logstash_Prefix fluent-bit\n    Retry_Limit\
-  \ 5\n    Suppress_Type_Name On\n"
