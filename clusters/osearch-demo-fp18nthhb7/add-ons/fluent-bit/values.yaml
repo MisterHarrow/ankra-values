@@ -424,7 +424,7 @@ config:
         TLS On
         tls.verify Off
         HTTP_User admin
-        HTTP_Passwd C)Ph]Y\\/&OP6qns%
+        HTTP_Passwd "C)Ph]Y\\/&OP6qns%"
         Logstash_Format On
         Logstash_Prefix fluent-bit
         Retry_Limit 5
