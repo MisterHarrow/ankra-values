@@ -428,6 +428,7 @@ config:
         Logstash_Format On
         Logstash_Prefix fluent-bit
         Retry_Limit 5
+        Suppress_Type_Name On
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
   upstream: {}
