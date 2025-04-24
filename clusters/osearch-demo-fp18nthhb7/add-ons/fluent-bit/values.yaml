@@ -418,17 +418,16 @@ config:
   outputs: |
     [OUTPUT]
         Name opensearch
-        Match * # Send all logs (kube.* and host.*) to OpenSearch
-        Host opensearch-cluster-master # Your OpenSearch master service name
-        Port 9200                    # Your OpenSearch service port
-        TLS On                       # Enable TLS since OpenSearch uses https
-        tls.verify Off               # Disable verification for self-signed certs
-        HTTP_User admin              # OpenSearch admin username
-        HTTP_Passwd C)Ph]Y\\/&OP6qns%  # OpenSearch admin password (NOTE escaped backslash!)
-        Logstash_Format On           # Use Logstash-style index names (e.g., fluent-bit-YYYY.MM.DD)
-        Logstash_Prefix fluent-bit   # Prefix for the index name
-        Retry_Limit 5                # Optional: Retry sending logs a few times if connection fails (default might be False or unlimited)
-
+        Match *
+        Host opensearch-cluster-master
+        Port 9200
+        TLS On
+        tls.verify Off
+        HTTP_User admin
+        HTTP_Passwd C)Ph]Y\\/&OP6qns%
+        Logstash_Format On
+        Logstash_Prefix fluent-bit
+        Retry_Limit 5
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
   upstream: {}
