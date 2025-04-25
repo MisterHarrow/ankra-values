@@ -102,10 +102,10 @@ securityContext:
 config:
   opensearch_dashboards.yml: |
     server.host: "{{ .Values.serverHost }}"
-      opensearch.hosts: ["{{ .Values.opensearchHosts }}"]
-      opensearch.username: "admin"
-      opensearch.password: "B3__#njam!n"
-      opensearch.ssl.verificationMode: none
+    opensearch.hosts: ["{{ .Values.opensearchHosts }}"]
+    opensearch.username: "admin"
+    opensearch.password: "B3__#njam!n"
+    opensearch.ssl.verificationMode: none
 
 opensearchDashboardsYml:
   defaultMode:
