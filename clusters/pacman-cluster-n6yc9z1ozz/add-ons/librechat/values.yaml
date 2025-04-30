@@ -1,0 +1,91 @@
+affinity: {}
+fullnameOverride: ''
+global:
+  librechat:
+    existingSecretApiKey: OPENAI_API_KEY
+    existingSecretGoogleApiKey: GOOGLE_KEY
+    existingSecretName: librechat-credentials-env
+image:
+  pullPolicy: IfNotPresent
+  registry: ghcr.io
+  repository: danny-avila/librechat
+  tag: latest
+imagePullSecrets: []
+ingress:
+  annotations: {}
+  className: ''
+  enabled: false
+  hosts:
+  - host: chart-example.local
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls: []
+librechat:
+  configEnv:
+    ALLOW_EMAIL_LOGIN: 'true'
+    ALLOW_REGISTRATION: 'true'
+    ALLOW_SOCIAL_LOGIN: 'true'
+    ALLOW_UNVERIFIED_EMAIL_LOGIN: 'true'
+    CREDS_IV: ac028c86ba23f4cd48165e0ca9f2c683
+    CREDS_KEY: 9e95d9894da7e68dd69c0046caf5343c8b1e80c89609b5a1e40e6568b5b23ce6
+    DEBUG_PLUGINS: 'true'
+    JWT_REFRESH_SECRET: eaa5191f2914e30b9387fd84e254e4ba6fc51b4654968a9b0803b456a54b8418
+    JWT_SECRET: 16f8c0ef4a5d391b26034086c628469d3f9f497f08163ab9b40137092f2909ef
+    SEARCH: 'true'
+  configYamlContent: "version: \"1.2.1\"\nendpoints:\n  openAI:\n    models:\n   \
+    \   default: [\"gpt-3.5-turbo\", \"gpt-4\"]\n      fetch: true\n  google:\n  \
+    \  models:\n      default: [\"gemini-1.5-pro-latest\"]\n      fetch: true\n  custom:\n\
+    \    - name: \"Ollama\"\n      apiKey: \"ollama\"  # Dummy value required by LibreChat;\
+    \ not actually used by Ollama.\n      baseURL: \"http://ollama:11434/v1/chat/completions\"\
+    \n      models:\n        default: [\"deepseek-coder\", \"gemma2\"]\n        fetch:\
+    \ false\n      userIdQuery: false\n      titleConvo: true\n      titleModel: \"\
+    current_model\"\n      summarize: false\n      summaryModel: \"current_model\"\
+    \n      forcePrompt: false\n      modelDisplayLabel: \"current_model\""
+  existingSecretName: librechat-credentials-env
+librechat-rag-api:
+  embeddingsProvider: openai
+  enabled: false
+lifecycle: {}
+meilisearch:
+  auth:
+    existingMasterKeySecret: librechat-credentials-env
+  enabled: true
+  image:
+    tag: v1.7.3
+  persistence:
+    enabled: true
+    storageClass: ''
+mongodb:
+  auth:
+    enabled: false
+  databases:
+  - LibreChat
+  enabled: true
+  image:
+    registry: docker.io
+    repository: dlavrenuek/bitnami-mongodb-arm
+    tag: latest
+nameOverride: ''
+nodeSelector: {}
+podAnnotations: {}
+podLabels: {}
+podSecurityContext:
+  fsGroup: 2000
+replicaCount: 1
+resources: {}
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+service:
+  annotations: {}
+  port: 3080
+  type: ClusterIP
+tolerations: []
+updateStrategy:
+  type: RollingUpdate
+volumeMounts: []
+volumes: []
