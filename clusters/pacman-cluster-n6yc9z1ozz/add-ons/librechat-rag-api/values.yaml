@@ -1,0 +1,49 @@
+affinity: {}
+extraContainers: {}
+fullnameOverride: ''
+global:
+  librechat:
+    existingSecretApiKey: OPENAI_API_KEY
+    existingSecretGoogleApiKey: GOOGLE_KEY
+    existingSecretName: librechat-credentials-env
+image:
+  pullPolicy: IfNotPresent
+  registry: ghcr.io
+  repository: danny-avila/librechat-rag-api-dev-lite
+  tag: latest
+imagePullSecrets: []
+nameOverride: ''
+nodeSelector: {}
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+postgresql:
+  auth:
+    database: librechat-vectordb
+    existingSecret: librechat-vectordb
+    existingSecretKey: postgres-password
+    username: postgres
+  enabled: true
+  image:
+    registry: docker.io
+    repository: pgvector/pgvector
+    tag: pg16
+rag:
+  configEnv:
+    DB_PORT: '5432'
+    EMBEDDINGS_PROVIDER: openai
+  enabled: true
+  existingSecret: librechat-credentials-env
+resources: {}
+securityContext: {}
+service:
+  annotations: {}
+  port: 8000
+  type: ClusterIP
+serviceAccount:
+  annotations: {}
+  create: false
+  name: ''
+tolerations: []
+volumeMounts: {}
+volumes: {}
