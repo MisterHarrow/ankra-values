@@ -1,0 +1,173 @@
+---
+clusterName: "squirtle"
+nodeGroup: "master"
+
+# If discovery.type in the opensearch configuration is set to "single-node",
+# this should be set to "true"
+# If "true", replicas will be forced to 1
+singleNode: true
+
+# The service that non master groups will try to connect to when joining the cluster
+# This should be set to clusterName + "-" + nodeGroup for your master group
+masterService: "squirtle-master"
+
+# OpenSearch roles that will be applied to this nodeGroup
+# These will be set as environment variable "node.roles". E.g. node.roles=master,ingest,data,remote_cluster_client
+roles:
+  - master
+  - ingest
+  - data
+  - remote_cluster_client
+
+# replicas: 3 # Commented out as singleNode: true overrides this
+
+# if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
+majorVersion: ""
+
+global:
+  # Set if you want to change the default docker registry, e.g. a private one.
+  dockerRegistry: ""
+
+# Allows you to add any config files in {{ .Values.opensearchHome }}/config
+opensearchHome: /usr/share/opensearch
+
+# such as opensearch.yml and log4j2.properties
+config:
+  opensearch.yml: |
+    cluster.name: squirtle   # Ensure this matches your top-level .Values.clusterName
+    network.host: 0.0.0.0
+    ######## End OpenSearch Security Demo Configuration ########
+  # log4j2.properties: |
+  #   # You can add log4j2 properties here if needed
+
+extraEnvs:
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: "coRrecth0rseba++ery9.23.2007staple$"
+
+envFrom: []
+
+secretMounts: []
+
+hostAliases: []
+
+image:
+  repository: "opensearchproject/opensearch"
+  tag: "" # Allows chart to use its default AppVersion
+  pullPolicy: "IfNotPresent"
+
+podAnnotations: {}
+
+openSearchAnnotations: {}
+
+labels: {}
+
+opensearchJavaOpts: "-Xmx512M -Xms512M"
+resources:
+  requests:
+    cpu: "1"
+    memory: "1Gi"
+  limits:
+    cpu: "2"
+    memory: "1.5Gi"
+
+initResources: {}
+
+sidecarResources: {}
+
+networkHost: "0.0.0.0" # This is for OpenSearch config, usually set inside opensearch.yml too
+
+rbac:
+  create: false
+  serviceAccountAnnotations: {}
+  serviceAccountName: ""
+  automountServiceAccountToken: false
+
+podSecurityPolicy:
+  create: false
+  name: ""
+  spec:
+    privileged: true
+    fsGroup:
+      rule: RunAsAny
+    runAsUser:
+      rule: RunAsAny
+    seLinux:
+      rule: RunAsAny
+    supplementalGroups:
+      rule: RunAsAny
+    volumes:
+      - secret
+      - configMap
+      - persistentVolumeClaim
+      - emptyDir
+
+persistence:
+  enabled: true
+  enableInitChown: true
+  storageClassName: gp3 # Specify if gp3 is NOT default but you want to use it. Omit if gp3 IS default.
+  accessModes:
+    - ReadWriteOnce
+  size: 30Gi
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+extraContainers: []
+
+extraInitContainers: []
+
+priorityClassName: ""
+
+antiAffinityTopologyKey: "kubernetes.io/hostname"
+antiAffinity: "soft"
+customAntiAffinity: {}
+nodeAffinity: {}
+podAffinity: {}
+topologySpreadConstraints: []
+
+podManagementPolicy: "Parallel" # Changed from "Serial" (original default) in earlier discussions, keep as Parallel if intended
+
+enableServiceLinks: true
+
+protocol: https
+httpPort: 9200
+transportPort: 9300
+metricsPort: 9600
+httpHostPort: ""
+transportHostPort: ""
+
+service:
+  labels: {}
+  labelsHeadless: {}
+  headless:
+    annotations: {}
+  type: LoadBalancer # Changed from ClusterIP
+  nodePort: ""
+  annotations: {}
+  httpPortName: http
+  transportPortName: transport
+  metricsPortName: metrics
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  externalTrafficPolicy: ""
+
+updateStrategy: RollingUpdate
+
+maxUnavailable: 1
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+
+sysctl:
+  enabled: false
+sysctlInit:
+  enabled: true
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
