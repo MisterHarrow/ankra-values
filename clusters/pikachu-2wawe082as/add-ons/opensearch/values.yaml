@@ -42,7 +42,7 @@ config:
 
 extraEnvs:
   - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
-    value: "PikachuAdmin$2025"
+    value: "coRrecth0rseba++ery9.23.2007staple$"
 
 envFrom: []
 
