@@ -471,7 +471,15 @@ additionalDaemonSets:
 
 # Enable compatibility for the A1 instance family via use of an AL2-based image in a separate DaemonSet
 # a1CompatibilityDaemonSet: true
-storageClasses: []
+storageClasses:
+  - name: gp3 # This is the name OpenSearch will reference in its persistence.storageClassName
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+    volumeBindingMode: WaitForFirstConsumer
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    parameters:
+      type: gp3
   
 
 defaultStorageClass:
