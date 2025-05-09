@@ -11,10 +11,10 @@ image:
   tag: v2.12.0
   pullPolicy: IfNotPresent
 
-runtimeClassName: ''
+runtimeClassName: ""
 imagePullSecrets: []
-nameOverride: ''
-fullnameOverride: ''
+nameOverride: ""
+fullnameOverride: ""
 
 # AWS LBC only has 1 main working pod, other pods are just standby
 # the purpose of enable hpa is to survive load induced failure by the calls to the aws-load-balancer-webhook-service
@@ -116,7 +116,7 @@ additionalLabels: {}
 enableCertManager: false
 
 # The name of the Kubernetes cluster. A non-empty value is required
-clusterName: '' #Template: clusterName
+clusterName: ikuaesg3mo #Template: clusterName
 
 # cluster contains configurations specific to the kubernetes cluster
 cluster:
@@ -203,7 +203,7 @@ ingressMaxConcurrentReconciles:
 logLevel:
 
 # The address the metric endpoint binds to. (default ":8080")
-metricsBindAddr: ''
+metricsBindAddr: ""
 
 webhookConfig:
   # disableIngressValidation disables the validation of resources of kind Ingress, false by default
@@ -368,7 +368,7 @@ controllerConfig:
   # LBCapacityReservation: true
 
 certDiscovery:
-  allowedCertificateAuthorityARNs: '' # empty means all CAs are in scope
+  allowedCertificateAuthorityARNs: "" # empty means all CAs are in scope
 
 # objectSelector for webhook
 objectSelector:
