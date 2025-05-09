@@ -116,7 +116,7 @@ additionalLabels: {}
 enableCertManager: false
 
 # The name of the Kubernetes cluster. A non-empty value is required
-clusterName: ikuaesg3mo #Template: clusterName
+clusterName: idc #Template: clusterName
 
 # cluster contains configurations specific to the kubernetes cluster
 cluster:
