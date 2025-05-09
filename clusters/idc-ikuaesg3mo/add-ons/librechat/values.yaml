@@ -53,19 +53,22 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 3080
   annotations: {}
 ingress:
-  enabled: false
-  className: ""
-  annotations: {}
+  enabled: true
+  className: "ingress"
+  annotations:
+    "cert-manager.io/cluster-issuer": "letsencrypt-staging"
   hosts:
-    - host: chart-example.local
+    - host: chat.ankra.ai
       paths:
         - path: /
-          pathType: ImplementationSpecific
-  tls: []
+          pathType: Prefix
+  tls:
+    - host: chat.ankra.ai
+      secretName: librechat-ankra-ai-tls-staging
 resources: {}
 podSecurityContext:
   fsGroup: 2000
