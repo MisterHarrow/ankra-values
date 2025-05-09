@@ -91,7 +91,7 @@ librechat-rag-api:
 mongodb:
   image:
     registry: docker.io
-    repository: dlavrenuek/bitnami-mongodb-arm
+    repository: bitnami/mongodb
     tag: latest
   enabled: true
   auth:
