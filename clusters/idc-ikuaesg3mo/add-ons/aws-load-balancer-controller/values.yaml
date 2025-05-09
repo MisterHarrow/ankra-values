@@ -156,7 +156,7 @@ ingressClassParams:
 createIngressClassResource: true
 
 # The AWS region for the kubernetes cluster. Set to use KIAM or kube2iam for example.
-region: EU - Ireland #Template: region
+region: eu-west-1 #Template: region
 
 # The VPC ID for the Kubernetes cluster. Set this manually when your pods are unable to use the metadata service to determine this automatically
 vpcId:
