@@ -1,0 +1,212 @@
+# Default values for librechat.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+global:
+  librechat:
+    existingSecretName: "librechat-credentials-env"
+    # Used for Setting the Right Key, can be something like AZURE_API_KEY, if Azure OpenAI is used
+    existingSecretApiKey: OPENAI_API_KEY
+    # If you have a Google key in the secret, specify its name if different from GOOGLE_KEY
+    # existingSecretGoogleApiKey: GOOGLE_KEY # This was in your earlier version, add if needed
+
+librechat:
+# LibreChat allows Configuration in 2 Ways: Environment Variables and a Config file. For easier Deployment the needed values are predifined here but should be adjusted to your needs.
+  configEnv:
+    PLUGIN_MODELS: gpt-4,gpt-4-turbo-preview,gpt-4-0125-preview,gpt-4-1106-preview,gpt-4-0613,gpt-3.5-turbo,gpt-3.5-turbo-0125,gpt-3.5-turbo-1106,gpt-3.5-turbo-0613
+    DEBUG_PLUGINS: "true"
+    # IMPORTANT -- GENERATE your own: openssl rand -hex 32 and openssl rand -hex 16 for CREDS_IV. Best Practise: Put into Secret. See existingSecretName
+    CREDS_KEY: 9e95d9894da7e68dd69c0046caf5343c8b1e80c89609b5a1e40e6568b5b23ce6
+    CREDS_IV: ac028c86ba23f4cd48165e0ca9f2c683
+    JWT_SECRET: 16f8c0ef4a5d391b26034086c628469d3f9f497f08163ab9b40137092f2909ef
+    JWT_REFRESH_SECRET: eaa5191f2914e30b9387fd84e254e4ba6fc51b4654968a9b0803b456a54b8418
+    # Set Config Params here
+    # ENV_NAME: env-value
+    # Added from your previous config:
+    ALLOW_UNVERIFIED_EMAIL_LOGIN: "true"
+    ALLOW_REGISTRATION: "true"
+    ALLOW_EMAIL_LOGIN: "true"
+    ALLOW_SOCIAL_LOGIN: "true"
+    SEARCH: "true"
+
+    # existing Secret for all envs/ only Passwords. Can be locally generated with: kubectl create secret generic librechat-secret-envs --from-env-file=.env.example --dry-run=client -o yaml > secret-envs.yaml
+    ## For better maintainabillity, you can put all vars directly in the config Section and only overwrite Secrets with this if nessesary.
+    # Required Values:
+    # - MEILI_MASTER_KEY
+  existingSecretName: "librechat-credentials-env" # This refers to the secret holding MEILI_MASTER_KEY, OPENAI_API_KEY etc.
+
+  # # For adding a custom config yaml-file you can set the contents in this var
+  # Added from your previous config:
+  configYamlContent: |
+    version: "1.2.1"
+    endpoints:
+      openAI:
+        models:
+          default: ["gpt-3.5-turbo", "gpt-4"]
+          fetch: true
+      google:
+        models:
+          default: ["gemini-1.5-pro"]
+          fetch: true
+      custom:
+        - name: "Ollama"
+          apiKey: "ollama"  # Dummy value required by LibreChat
+          baseURL: "http://ollama:11434/v1/chat/completions"
+          models:
+            default: ["deepseek-coder:latest"]  # Match Ollama's add-on pull & run config
+            fetch: true
+          userIdQuery: false
+          titleConvo: true
+          titleModel: "current_model"
+          summarize: false
+          summaryModel: "current_model"
+          forcePrompt: false
+          modelDisplayLabel: "current_model"
+
+# # name of existing Yaml configmap, key must be librechat.yaml
+  existingConfigYaml: ""
+
+  # Volume used to store image Files uploaded to the Web UI
+  imageVolume:
+    enabled: true
+    size: 10G
+    accessModes: ReadWriteOnce
+    # storageClassName: "" # Leave empty to use default StorageClass, or specify one
+
+# only lite RAG is supported
+librechat-rag-api:
+  enabled: false
+  # can be azure, openai, huggingface or huggingfacetei
+  embeddingsProvider: openai
+
+
+image:
+  repository: danny-avila/librechat
+  registry: ghcr.io
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest" # Changed from "" in your default to "latest" as per your previous values
+
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+
+lifecycle: {}
+# # base for adding a custom banner // see https://github.com/danny-avila/LibreChat/pull/3952 for an example
+#   postStart:
+#     exec:
+#       command: ["/bin/sh", "-c", "npm run update-banner <displayFrom(Format:YYYY-mm-ddTHH:MM:SSZ)> <displayTo(Format:YYYY-mm-ddTHH:MM:SSZ)> <message> <isPublic(true/false)>"]
+
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  # readOnlyRootFilesystem: true # not supported yet
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# --- SERVICE CONFIGURATION - MODIFIED ---
+service:
+  type: ClusterIP   # MODIFIED: Changed from LoadBalancer to ClusterIP for Ingress
+  port: 3080        # Port the Librechat service will expose
+  annotations: {}
+
+# --- INGRESS CONFIGURATION - MODIFIED ---
+ingress:
+  enabled: true       # MODIFIED: Enabled Ingress
+  className: "nginx"  # MODIFIED: Set to your Ingress Nginx class name
+  annotations:
+    "cert-manager.io/cluster-issuer": "letsencrypt-staging" # For cert-manager
+    # "nginx.ingress.kubernetes.io/proxy-body-size": "0" # Optional: if LibreChat needs large uploads
+    # "nginx.ingress.kubernetes.io/force-ssl-redirect": "true" # Optional: good practice
+  hosts:
+    - host: chat.ankra.ai # MODIFIED: Set your desired hostname
+      paths:
+        - path: /
+          pathType: Prefix # MODIFIED: Changed to Prefix for broader matching
+  tls:
+    - hosts:
+        - chat.ankra.ai # MODIFIED: Must match the host above
+      secretName: chat-ankra-ai-tls-staging # MODIFIED: Name for cert-manager to store the cert
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# livenessProbe: # Defaults from chart, ensure they are appropriate for LibreChat
+#   httpGet:
+#     path: /
+#     port: http
+# readinessProbe: # Defaults from chart
+#   httpGet:
+#     path: /
+#     port: http
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Strategy for LibreChat deployment updates
+updateStrategy:
+  type: RollingUpdate
+
+# --- MONGODB PARAMETERS - MODIFIED IMAGE ---
+mongodb:
+  enabled: true
+  auth:
+    enabled: false
+  databases:
+    - LibreChat
+  image:
+    registry: docker.io
+    repository: bitnami/mongodb # MODIFIED: For amd64 compatibility
+    tag: latest                # MODIFIED: For amd64 compatibility
+#  persistence:
+#    size: 8Gi
+
+# --- MEILISEARCH PARAMETERS ---
+meilisearch:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: "" # Leave empty to use default StorageClass, or specify one
+  image:
+    tag: "v1.7.3" # This is multi-arch and should be fine
+  auth:
+    # Use an existing Kubernetes secret for the MEILI_MASTER_KEY
+    # Ensure MEILI_MASTER_KEY is a key in your "librechat-credentials-env" secret
+    existingMasterKeySecret: "librechat-credentials-env"
