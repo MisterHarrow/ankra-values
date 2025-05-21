@@ -360,7 +360,8 @@ persistentVolume:
   volumeName: ""
 
 # -- Node labels for pod assignment.
-nodeSelector: {}
+nodeSelector:
+  cloud.google.com/gke-accelerator: "nvidia-tesla-t4"
 
 # -- Tolerations for pod assignment
 tolerations: []
