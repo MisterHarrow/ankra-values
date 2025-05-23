@@ -134,7 +134,7 @@ podAnnotations: {}
 
 # -- Map of labels to add to the pods
 podLabels:
-  cloud.google.com/gke-accelerator: '"nvidia-tesla-t4"' #Template: podLabels.cloud.google.com/gke-accelerator
+  cloud.google.com/gke-accelerator: "nvidia-tesla-t4" #Template: podLabels.cloud.google.com/gke-accelerator
 podSecurityContext: {} # fsGroup: 2000
 
 # -- Container Security Context
