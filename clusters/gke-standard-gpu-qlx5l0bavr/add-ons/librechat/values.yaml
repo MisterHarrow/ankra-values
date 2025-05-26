@@ -50,13 +50,13 @@ librechat:
           # Verify if LibreChat requires the full path here or just the base. Assuming baseline path is intentional for LibreChat.
           baseURL: "http://ollama.default.svc.cluster.local:11434"
           models:
-            default: ["qwen2:7b"] # Updated to your specified model
+            default: ["qwen3:8b"] # Updated to your specified model
             fetch: true # Attempt to list models from the endpoint
           userIdQuery: false
           titleConvo: true
-          titleModel: "qwen2:7b" # Use your specific model for titles
+          titleModel: "qwen3:8b" # Use your specific model for titles
           summarize: false # Enable if desired
-          summaryModel: "qwen2:7b" # Use your specific model for summaries
+          summaryModel: "qwen3:8b" # Use your specific model for summaries
           forcePrompt: false
           modelDisplayLabel: "Ollama (qwen2:7b)" # Clearer display label
 
