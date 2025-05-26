@@ -90,7 +90,7 @@ ingress:
     # For GKE managed SSL with GKE Ingress (if not using NGINX Ingress Controller directly):
     # networking.gke.io/managed-certificates: "your-managed-certificate-name"
   hosts:
-    - host: "librechat.your-domain.com" # IMPORTANT: Replace with your actual hostname
+    - host: "chat.ankra.ai" # IMPORTANT: Replace with your actual hostname
       paths:
         - path: /
           pathType: ImplementationSpecific # Or Prefix
@@ -169,4 +169,4 @@ meilisearch:
   image:
     tag: "v1.7.3" # Matches your baseline
   auth:
-    existingMasterKeySecret: "librechat-credentials-env" # MEILI_MASTER_KEY should be in this secret
+    existingMasterKeySecret: "librechat-credentials-env"
