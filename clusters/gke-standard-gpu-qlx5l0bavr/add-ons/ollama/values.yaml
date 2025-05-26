@@ -354,13 +354,18 @@ persistentVolume:
   # reference the PV moving forward
   volumeName: ""
 
+#Template This
 # -- Node labels for pod assignment.
 nodeSelector:
   cloud.google.com/gke-accelerator: nvidia-l4
   cloud.google.com/gke-accelerator-count: "1"
 
+#Template This
 # -- Tolerations for pod assignment
-tolerations: []
+tolerations:
+- key: "nvidia.com/gpu"
+  operator: "Exists"
+  effect: "NoSchedule"
 
 # -- Affinity for pod assignment
 affinity: {}
