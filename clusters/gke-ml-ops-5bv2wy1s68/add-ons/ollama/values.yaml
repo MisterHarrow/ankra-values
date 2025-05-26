@@ -39,7 +39,7 @@ serviceAccount:
   name: ""
 podAnnotations: {}
 podLabels:
-  cloud.google.com/gke-accelerator: nvidia-l4
+  cloud.google.com/gke-accelerator: nvidia-tesla-t4
 podSecurityContext: {}
 securityContext: {}
 runtimeClassName: ""
