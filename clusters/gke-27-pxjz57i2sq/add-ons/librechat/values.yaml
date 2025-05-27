@@ -48,7 +48,7 @@ librechat:
           # The path /v1/... is from your baseline; ensure it's what LibreChat expects for Ollama.
           # A more common base URL for Ollama itself is just http://...:11434 (LibreChat would append /api/chat, etc.)
           # Verify if LibreChat requires the full path here or just the base. Assuming baseline path is intentional for LibreChat.
-          baseURL: "http://ollama.default.svc.cluster.local:11434"
+          baseURL: "http://ollama.default.svc.cluster.local:11434/v1"
           models:
             default: ["qwen3:latest"] # Updated to your specified model
             fetch: true # Attempt to list models from the endpoint
