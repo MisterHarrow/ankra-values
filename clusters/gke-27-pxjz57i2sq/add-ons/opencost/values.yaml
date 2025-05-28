@@ -5,7 +5,7 @@ fullnameOverride: ""
 # -- Override the deployment namespace
 namespaceOverride: ""
 # -- Override the default name of cluster - Can be found in /etc/kubernetes/admin.conf: clusters -> cluster -> name
-clusterName: "cluster.local" # GKE_CLUSTER_NAME_HERE or a relevant identifier
+clusterName: "bens-cluster" # GKE_CLUSTER_NAME_HERE or a relevant identifier
 
 loglevel: info
 
@@ -58,7 +58,7 @@ networkPolicies:
   # -- Internal Prometheus settings related to NetworkPolicies
   prometheus:
     # -- Namespace where internal Prometheus is installed
-    namespace: prometheus-system
+    namespace: default
     # -- Pod port of in-cluster Prometheus
     port: 9090
     # -- Labels applied to the Prometheus server pod(s)
@@ -123,9 +123,9 @@ opencost:
     apiPort: 9003
     # debugPort: 40000 # for development purposes (debugging with delve) and not for production.
     # -- The GCP Pricing API requires a key. This is supplied just for evaluation.
-    cloudProviderApiKey: "" # AIzaSyCLfUyf362UynjODdH98XdvBXzi_M2EAuc For GCP, cloudIntegrationSecret is preferred
+    cloudProviderApiKey: "" # For GCP, cloudIntegrationSecret is preferred
     # -- Default cluster ID to use if cluster_id is not set in Prometheus metrics.
-    defaultClusterId: 'cluster.local' # GKE_CLUSTER_NAME_HERE or a relevant identifier
+    defaultClusterId: 'bens-cluster' # GKE_CLUSTER_NAME_HERE or a relevant identifier
     image:
       # -- Exporter container image registry
       registry: ghcr.io
