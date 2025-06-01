@@ -1,0 +1,165 @@
+replicaCount: 1
+
+global:
+  librechat:
+    existingSecretName: "librechat-credentials-env" # Correct: Using your specified K8s secret
+    existingSecretApiKey: OPENAI_API_KEY # Keep if you plan to use OpenAI and the key is in the secret
+    existingSecretGoogleApiKey: GOOGLE_KEY # Keep if you plan to use Google models and the key is in the secret
+
+librechat:
+  configEnv:
+    # Sensitive values like CREDS_KEY, CREDS_IV, JWT_SECRET, JWT_REFRESH_SECRET
+    # should be stored in and sourced from "librechat-credentials-env" Kubernetes secret.
+    # The hardcoded values below are from your baseline.
+    # Ensure they are present in your Kubernetes secret instead of being listed here.
+    # If your chart/LibreChat image doesn't automatically pick them up from existingSecretName for these specific vars,
+    # you might need to mount them explicitly or ensure the secret contains them with exact key names.
+    # For now, we assume they are primarily managed in the secret.
+    # CREDS_KEY: "" # Example: To be sourced from existingSecretName
+    # CREDS_IV: "" # Example: To be sourced from existingSecretName
+    # JWT_SECRET: "" # Example: To be sourced from existingSecretName
+    # JWT_REFRESH_SECRET: "" # Example: To be sourced from existingSecretName
+
+    DEBUG_PLUGINS: "true"
+    ALLOW_UNVERIFIED_EMAIL_LOGIN: "true"
+    ALLOW_REGISTRATION: "true"
+    ALLOW_EMAIL_LOGIN: "true"
+    ALLOW_SOCIAL_LOGIN: "true" # Set to false if you don't want social logins
+    SEARCH: "true" # Requires MeiliSearch to be enabled and working
+    RAG_API_URL: "http://librechat-rag-api-librechat-rag-api.default.svc.cluster.local:8000"
+    
+
+  configYamlContent: |
+    version: "1.2.1" # Matches your baseline
+    endpoints:
+      openAI:
+        apiKey: ${OPENAI_API_KEY}
+        models:
+          default: ["gpt-3.5-turbo", "gpt-4"]
+          fetch: true
+      google:
+        apiKey: ${GOOGLE_KEY}
+        models:
+          default: ["gemini-1.5-pro"]
+          fetch: true
+      custom:
+        - name: "Ollama" # This is the name of the Ollama service in the cluster & what will be shown in librechat UI
+          apiKey: "ollama_custom_api_key_placeholder" # Dummy/placeholder, generally not used for Ollama
+          # IMPORTANT: Replace <your-ollama-service-name> and <namespace>
+          # This URL should point to your Ollama service within the Kubernetes cluster.
+          # The path /v1/... is from your baseline; ensure it's what LibreChat expects for Ollama.
+          # A more common base URL for Ollama itself is just http://...:11434 (LibreChat would append /api/chat, etc.)
+          # Verify if LibreChat requires the full path here or just the base. Assuming baseline path is intentional for LibreChat.
+          baseURL: "http://ollama.default.svc.cluster.local:11434/v1"
+          models:
+            default: ["qwen3:latest"] # Updated to your specified model
+            fetch: true # Attempt to list models from the endpoint
+          userIdQuery: false
+          titleConvo: true
+          titleModel: "qwen3:latest" # Use your specific model for titles
+          summarize: false # Enable if desired
+          summaryModel: "qwen3:latest" # Use your specific model for summaries
+          forcePrompt: false
+          modelDisplayLabel: "Ollama (qwen3:8b)" # Clearer display label
+
+  # This references the same secret specified in global.librechat.existingSecretName
+  # It ensures that environment variables defined in the secret are available to the LibreChat pod.
+  existingSecretName: "librechat-credentials-env"
+
+image:
+  repository: danny-avila/librechat
+  registry: ghcr.io
+  pullPolicy: IfNotPresent
+  tag: "latest" # Or specify a fixed version like "v1.2.1" for stability
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP # Changed from LoadBalancer as Ingress will be used
+  port: 3080
+  annotations: {}
+
+ingress:
+  enabled: true # Enabled Ingress
+  className: "nginx" # Assuming NGINX Ingress Controller. Adjust if yours has a different class name.
+  annotations:
+    # Add necessary annotations for your Ingress controller
+    # Example for cert-manager:
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # kubernetes.io/ingress.class: nginx # Legacy, prefer className
+    # For GKE managed SSL with GKE Ingress (if not using NGINX Ingress Controller directly):
+    # networking.gke.io/managed-certificates: "your-managed-certificate-name"
+  hosts:
+    - host: "chat.ankra.ai" # IMPORTANT: Replace with your actual hostname
+      paths:
+        - path: /
+          pathType: ImplementationSpecific # Or Prefix
+  tls:
+  # Example for cert-manager:
+  # - secretName: librechat-tls-secret
+  #   hosts:
+  #     - chat.ankra.ai
+  # If using GKE Managed Certificates, TLS is often configured outside the Ingress object in a ManagedCertificate resource.
+
+resources:
+  # It's highly recommended to set resource requests and limits for production.
+  limits:
+    cpu: "2"
+    memory: "4Gi"
+  requests:
+    cpu: "500m"
+    memory: "2Gi"
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+updateStrategy:
+  type: RollingUpdate
+
+lifecycle: {}
+podAnnotations: {}
+podLabels: {}
+volumes: []
+volumeMounts: []
+
+librechat-rag-api:
+  enabled: false # Enabled simple RAG API (No separate embedding model) Set false if you want to define a separate embedding model in librechat-rag-api.yaml
+  embeddingsProvider: openai
+
+mongodb:
+  image:
+    registry: docker.io # Standard Docker Hub
+    repository: bitnami/mongodb # Changed to a standard Bitnami MongoDB image for x86_64
+    tag: "latest" # Or a specific version like "7.0"
+  enabled: true
+  auth:
+    enabled: false # For production, consider enabling auth and managing secrets.
+  databases:
+    - LibreChat
+  # persistence: # Defaults from Bitnami chart usually enable persistence. Verify if specific settings needed.
+  #   enabled: true
+  #   size: 8Gi
+
+meilisearch:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: "" # Specify if you have a preferred storage class, otherwise uses default
+    # size: 5Gi # Default from MeiliSearch chart usually sufficient unless large index expected
+  image:
+    tag: "v1.7.3" # Matches your baseline
+  auth:
+    existingMasterKeySecret: "librechat-credentials-env"
