@@ -13,8 +13,8 @@ rag:
     DB_USER: "librechat_user" # The user created by managed.roles and specified as owner
     DB_NAME: "librechat_rag_db" # The database created during bootstrap
     EMBEDDINGS_PROVIDER: "huggingfacetei"
-    # This URL must be the FULL path to the embeddings endpoint
-    HUGGINGFACE_API_BASE: "http://embedding-minilm-l6-v2-predictor.kserve.svc.cluster.local/v1/embed-upload"
+    # Point to the service root. The v0.5.0 client may handle the full path correctly.
+    HUGGINGFACE_API_BASE: "http://embedding-minilm-l6-v2-predictor.kserve.svc.cluster.local"
     # HUGGINGFACE_API_KEY: "dummy-kserve-key" # Usually not needed for self-hosted HF endpoints if no auth is configured on KServe
     # Other RAG API specific env vars might go here if needed (e.g., related to vector DB connection details if not covered by existingSecret elsewhere)
 
@@ -23,7 +23,7 @@ image:
   registry: ghcr.io
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: "v0.5.0"
 
 postgresql:
   enabled: false # Disabled to use external CloudNativePG instance
