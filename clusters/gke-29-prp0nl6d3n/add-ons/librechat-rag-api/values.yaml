@@ -42,7 +42,7 @@ postgresql:
     repository: bat-bs/bitnami-pgvector
     tag: pg16
   auth:
-    database: librechat-vectordb
+    database: "librechat_rag_db"
     username: "librechat_user" # This should match the DB_USER in the rag section
     # define a secret with values for "postgres-password", "password" (user Password)  and "replication-password" or add values directly
     # The 'existingSecret' below is a remnant from the disabled postgresql sub-chart.
