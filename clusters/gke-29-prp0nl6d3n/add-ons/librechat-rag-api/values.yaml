@@ -1,0 +1,121 @@
+# Required as vectorDB for RAG
+# provide context-aware responses based on user-uploaded files
+global:
+  librechat:
+    existingSecretName: "librechat-credentials-env"
+    existingSecretApiKey: OPENAI_API_KEY
+
+# Let's move extraEnv to the top level. The previous attempt to nest it
+# under 'rag:' was ignored by Helm, as confirmed by 'kubectl describe pod'.
+# A top-level key is another common pattern for injecting environment variables.
+extraEnv:
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: "librechat-pg-cluster-app"
+        key: "password"
+
+rag:
+  enabled: true
+  configEnv:
+    DB_HOST: "librechat-pg-cluster-rw.default.svc.cluster.local" # CNPG read-write service
+    DB_PORT: '5432'
+    DB_USER: "librechat_user" # The user created by managed.roles and specified as owner
+    DB_NAME: "librechat_rag_db" # The database created during bootstrap
+    # DB_PASSWORD will be sourced from the 'librechat-pg-cluster-app' Kubernetes secret.
+    # This secret is created by CNPG for the bootstrap 'owner' user.
+    # We are now injecting this directly via extraEnv, but we'll leave these here.
+    DB_PASSWORD_SECRET_NAME: "librechat-pg-cluster-app" # The default application secret
+    DB_PASSWORD_SECRET_KEY: "password" # Key in the secret for the DB password
+
+    EMBEDDINGS_PROVIDER: 
+    HUGGINGFACE_API_BASE: "http://embedding-minilm-l6-v2-predictor.kserve.svc.cluster.local" 
+    HUGGINGFACE_MODEL_ID: "sentence-transformers/all-MiniLM-L6-v2"
+    # HUGGINGFACE_API_KEY: "dummy-kserve-key" # Usually not needed for self-hosted HF endpoints if no auth is configured on KServe
+    # Other RAG API specific env vars might go here if needed (e.g., related to vector DB connection details if not covered by existingSecret elsewhere)
+
+image:
+  repository: danny-avila/librechat-rag-api-dev # there is rag-api-dev and rag-api-dev-lite. currently only lite is documented
+  registry: ghcr.io
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+postgresql:
+  enabled: false # Disabled to use external CloudNativePG instance
+  # nameOverride: vectordb
+  image:
+    registry: ghcr.io
+    repository: bat-bs/bitnami-pgvector
+    tag: pg16
+  auth:
+    database: librechat-vectordb
+    username: "librechat_user" # This should match the DB_USER in the rag section
+    # define a secret with values for "postgres-password", "password" (user Password)  and "replication-password" or add values directly
+    # The 'existingSecret' below is a remnant from the disabled postgresql sub-chart.
+    # It injects a conflicting POSTGRES_PASSWORD variable. We will clear it.
+    existingSecret: ""
+    # postgres-password is needed to enable pgvector extension. If you enable it manually you can use "password" and user "librechat"
+    existingSecretKey: "" # Clearing this as well.
+
+imagePullSecrets: []
+nameOverride: ''
+fullnameOverride: ''
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {} # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8000
+  annotations: {}
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+
+# livenessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+
+serviceAccount:
+  create: false
+  name: ""
+  annotations: {}
+
+volumeMounts: {}
+
+volumes: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+extraContainers: {}
