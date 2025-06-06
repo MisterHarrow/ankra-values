@@ -22,7 +22,7 @@ rag:
     DB_USER: "librechat_user" # The user created by managed.roles and specified as owner
     DB_NAME: "librechat_rag_db" # The database created during bootstrap
     EMBEDDINGS_PROVIDER: "huggingfacetei"
-    HUGGINGFACE_API_BASE: "http://embedding-minilm-l6-v2-predictor.kserve.svc.cluster.local" 
+    HUGGINGFACE_API_BASE: "http://embedding-minilm-l6-v2-predictor.kserve.svc.cluster.local:8080"
     HUGGINGFACE_MODEL_ID: "sentence-transformers/all-MiniLM-L6-v2"
     # HUGGINGFACE_API_KEY: "dummy-kserve-key" # Usually not needed for self-hosted HF endpoints if no auth is configured on KServe
     # Other RAG API specific env vars might go here if needed (e.g., related to vector DB connection details if not covered by existingSecret elsewhere)
