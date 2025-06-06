@@ -14,9 +14,7 @@ rag:
     DB_NAME: "librechat_rag_db" # The database created during bootstrap
     EMBEDDINGS_PROVIDER: "huggingfacetei"
     # This now points to the service root. The transformer will handle routing.
-    EMBEDDINGS_MODEL: "http://embedding-minilm-l6-v2-predictor.kserve.svc.cluster.local"
-    # HUGGINGFACE_API_KEY: "dummy-kserve-key" # Usually not needed for self-hosted HF endpoints if no auth is configured on KServe
-    # Other RAG API specific env vars might go here if needed (e.g., related to vector DB connection details if not covered by existingSecret elsewhere)
+    EMBEDDINGS_MODEL: "http://embedding-minilm-l6-v2-predictor.kserve.svc.cluster.local/v2/models/embedding-minilm-l6-v2/infer"
 
 image:
   repository: danny-avila/librechat-rag-api-dev # there is rag-api-dev and rag-api-dev-lite. currently only lite is documented
