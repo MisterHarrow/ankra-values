@@ -15,7 +15,7 @@ rag:
     DB_PASSWORD_SECRET_NAME: "librechat-pg-cluster-app" # The secret name you found
     DB_PASSWORD_SECRET_KEY: "password" # The key for the password
     EMBEDDINGS_PROVIDER: "huggingfacetei"
-    EMBEDDINGS_MODEL: "http://embedding-minilm-l6-v2-transformer.kserve.svc.cluster.local"
+    EMBEDDINGS_MODEL: "http://embedding-minilm-l6-v2-transformer.kserve.svc.cluster.local/v2/models/embedding-minilm-l6-v2/infer"
     # This now points to the service root. The transformer will handle routing.
     # HUGGINGFACE_API_BASE: "http://embedding-minilm-l6-v2.kserve.svc.cluster.local"
     # HUGGINGFACE_MODEL_ID: "sentence-transformers/all-MiniLM-L6-v2"
