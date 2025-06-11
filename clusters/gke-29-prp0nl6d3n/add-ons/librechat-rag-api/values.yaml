@@ -8,20 +8,22 @@ global:
 rag:
   enabled: true
   configEnv:
+    # Provide every possible variable name to ensure the application picks up the correct ones.
     DB_HOST: "librechat-pg-cluster-rw.default.svc.cluster.local"
+    POSTGRES_HOST: "librechat-pg-cluster-rw.default.svc.cluster.local"
+    DB_PORT: '5432'
+    POSTGRES_PORT: '5432'
     DB_USER: "librechat_user"
+    POSTGRES_USER: "librechat_user"
     DB_NAME: "librechat_rag_db"
+    POSTGRES_DB: "librechat_rag_db"
+
+    # Re-instating the password secret variables, as this seems to be the only way the app reads it.
+    DB_PASSWORD_SECRET_NAME: "librechat-pg-cluster-app"
+    DB_PASSWORD_SECRET_KEY: "password"
+
     EMBEDDINGS_PROVIDER: "huggingfacetei"
     EMBEDDINGS_MODEL: "http://embedding-minilm-l6-v2-transformer.kserve.svc.cluster.local/v2/models/embedding-minilm-l6-v2/infer"
-
-  # This is the standard Kubernetes way to inject a secret as an environment variable.
-  # This bypasses any application-level logic and ensures the correct password is set.
-  extraEnv:
-    - name: POSTGRES_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: "librechat-pg-cluster-app" # The name of the secret
-          key: "password" # The key within the secret
 
 image:
   repository: danny-avila/librechat-rag-api-dev # there is rag-api-dev and rag-api-dev-lite. currently only lite is documented
