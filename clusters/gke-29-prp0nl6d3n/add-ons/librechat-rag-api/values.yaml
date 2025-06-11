@@ -29,6 +29,10 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
+# By adding an empty postgresql block, we can sometimes override
+# a chart's hardcoded default behavior that looks for a non-existent secret.
+postgresql: {}
+
 imagePullSecrets: []
 nameOverride: ''
 fullnameOverride: ''
