@@ -8,12 +8,12 @@ global:
 rag:
   enabled: true
   configEnv:
-    DB_HOST: "librechat-pg-cluster-rw.default.svc.cluster.local" # CNPG read-write service
-    DB_PORT: '5432'
-    DB_USER: "librechat_user" # The user created by managed.roles and specified as owner
-    DB_NAME: "librechat_rag_db" # The database created during bootstrap
-    DB_PASSWORD_SECRET_NAME: "librechat-pg-cluster-app" # The secret name you found
-    DB_PASSWORD_SECRET_KEY: "password" # The key for the password
+    POSTGRES_HOST: "librechat-pg-cluster-rw.default.svc.cluster.local"
+    POSTGRES_PORT: '5432'
+    POSTGRES_USER: "librechat_user"
+    POSTGRES_DB: "librechat_rag_db"
+    DB_PASSWORD_SECRET_NAME: "librechat-pg-cluster-app"
+    DB_PASSWORD_SECRET_KEY: "password"
     EMBEDDINGS_PROVIDER: "huggingfacetei"
     EMBEDDINGS_MODEL: "http://embedding-minilm-l6-v2-transformer.kserve.svc.cluster.local/v2/models/embedding-minilm-l6-v2/infer"
     # This now points to the service root. The transformer will handle routing.
