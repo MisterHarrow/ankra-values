@@ -76,6 +76,12 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# Command override to force development mode for verbose logging
+command:
+  - "/bin/sh"
+  - "-c"
+  - "node /app/node_modules/.bin/cross-env NODE_ENV=development node api/server/index.js"
+
 service:
   type: ClusterIP # Changed from LoadBalancer as Ingress will be used
   port: 3080
