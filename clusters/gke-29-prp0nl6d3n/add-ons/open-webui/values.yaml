@@ -167,6 +167,10 @@ extraEnvVars:
   # -- Configure RAG to use your existing KServe embedding service.
   - name: RAG_EMBEDDING_ENGINE
     value: "" # Set to empty to use the custom API URL directly.
+  - name: RAG_VECTOR_DB
+    # This instructs Open WebUI to use pgvector in the main PostgreSQL
+    # database instead of the default local ChromaDB.
+    value: "pgvector"
   - name: RAG_EMBEDDING_API_URL
     # This must point to your KServe InferenceService for the embedding model.
     # The transformer you built will handle the protocol translation.
