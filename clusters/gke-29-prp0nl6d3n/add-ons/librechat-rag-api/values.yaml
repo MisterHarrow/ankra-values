@@ -10,6 +10,7 @@ rag:
   configEnv:
     # This block is for application-level settings.
     # The primary DB connection is configured below.
+    LOG_LEVEL: "DEBUG"
     DB_HOST: "librechat-pg-cluster-rw.default.svc.cluster.local"
     DB_PORT: '5432'
     DB_NAME: "librechat_rag_db"
