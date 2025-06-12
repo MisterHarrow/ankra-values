@@ -178,6 +178,10 @@ extraEnvVars:
     # Disable reranking for the initial test to keep things simple.
     value: ""
 
+  # -- Explicitly enable user sign-up on the login page.
+  - name: ENABLE_SIGNUP
+    value: "true"
+
 extraEnvFrom: []
 runtimeClassName: ""
 volumeMounts: {}
