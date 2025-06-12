@@ -166,11 +166,11 @@ extraEnvVars:
   
   # -- Configure RAG to use your existing KServe embedding service.
   - name: RAG_EMBEDDING_ENGINE
-    value: "ollama" # Treat the KServe endpoint as an "Ollama" compatible one.
+    value: "huggingface-tei" # Use a generic engine type to force use of the URL below.
   - name: RAG_EMBEDDING_API_URL
     # This must point to your KServe InferenceService for the embedding model.
     # The transformer you built will handle the protocol translation.
-    value: "http://embedding-minilm-l6-v2.default.svc.cluster.local:80"
+    value: "http://embedding-minilm-l6-v2-transformer.default.svc.cluster.local"
   - name: RAG_EMBEDDING_MODEL
     # The name of the model to use from the embedding service.
     value: "all-MiniLM-L6-v2"
