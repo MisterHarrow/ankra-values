@@ -166,7 +166,7 @@ extraEnvVars:
   
   # -- Configure RAG to use your existing KServe embedding service.
   - name: RAG_EMBEDDING_ENGINE
-    value: "huggingfacetei" # Use a generic engine type to force use of the URL below.
+    value: "" # Set to empty to use the custom API URL directly.
   - name: RAG_EMBEDDING_API_URL
     # This must point to your KServe InferenceService for the embedding model.
     # The transformer you built will handle the protocol translation.
