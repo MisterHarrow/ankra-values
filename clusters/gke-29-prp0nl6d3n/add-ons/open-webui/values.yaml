@@ -1,0 +1,270 @@
+# A name to override the default name of the chart. If not provided, a name will be generated.
+nameOverride: "open-webui"
+# A namespace to override the default namespace of the chart. If not provided, the namespace of the release will be used.
+namespaceOverride: ""
+
+ollama:
+  # -- Set to false because we are using an existing, standalone Ollama service in the cluster.
+  enabled: false
+  fullnameOverride: "open-webui-ollama"
+
+pipelines:
+  # -- Disabled for initial pilot deployment to reduce complexity.
+  enabled: false
+  extraEnvVars: []
+
+tika:
+  # -- Not needed for this project.
+  enabled: false
+
+# -- Tell Open WebUI where to find the existing Ollama service for chat.
+ollamaUrls:
+  - "http://ollama.default.svc.cluster.local:11434"
+
+# -- Disables taking Ollama Urls from `ollamaUrls`  list
+ollamaUrlsFromExtraEnv: false
+
+websocket:
+  # -- Not required for this pilot deployment.
+  enabled: false
+  manager: redis
+  url: redis://open-webui-redis:6379/0
+  nodeSelector: {}
+  redis:
+    enabled: false # Disabled, not needed for this evaluation.
+    name: open-webui-redis
+    pods: {}
+    image: {}
+    command: []
+    args: []
+    resources: {}
+    service: {}
+    tolerations: []
+    affinity: {}
+    securityContext: {}
+
+# -- Deploys a Redis cluster with subchart 'redis' from bitnami
+redis-cluster:
+  # -- Not required for this pilot deployment.
+  enabled: false
+
+# -- Value of cluster domain
+clusterDomain: cluster.local
+
+annotations: {}
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/metrics"
+podLabels:
+  app: open-webui
+  component: llm-chat-interface
+replicaCount: 1
+strategy: {}
+# -- Open WebUI image tags can be found here: https://github.com/open-webui/open-webui
+image:
+  repository: ghcr.io/open-webui/open-webui
+  tag: ""
+  pullPolicy: "IfNotPresent"
+
+serviceAccount:
+  enable: true
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: false
+
+imagePullSecrets: []
+
+# -- Health checks for the Open WebUI container. Good practice to keep these enabled.
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  failureThreshold: 1
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health/db
+    port: http
+  failureThreshold: 1
+  periodSeconds: 10
+
+startupProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  failureThreshold: 20
+
+resources: {}
+copyAppData:
+  resources: {}
+
+managedCertificate:
+  enabled: false
+
+ingress:
+  # -- Disabled for local testing via port-forward.
+  enabled: false
+  # -- Set to 'nginx' as per the project's Readme.md.
+  class: "nginx"
+  annotations:
+    # Use cert-manager for automatic TLS. Assumes cert-manager is installed.
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # Example issuer, adjust if needed.
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  # -- Set a placeholder host. You will need to update this to your actual domain.
+  host: "open-webui.your-domain.com"
+  additionalHosts: []
+  # -- Enable TLS and reference a secret that will be created by cert-manager.
+  tls: false
+  existingSecret: "open-webui-tls"
+
+persistence:
+  # -- Keep persistence enabled for user data, chats, etc.
+  enabled: true
+  size: 20Gi
+  existingClaim: ""
+  subPath: ""
+  accessModes:
+    - ReadWriteOnce
+  storageClass: ""
+  selector: {}
+  annotations: {}
+  provider: local
+  s3: {}
+  gcs: {}
+  azure: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+hostAliases: []
+
+service:
+  type: ClusterIP
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
+  port: 80
+  containerPort: 8080
+  nodePort: ""
+  labels:
+    app: open-webui
+    component: llm-chat-interface
+  loadBalancerClass: ""
+
+# -- Leave enabled as a fallback, but the specific RAG vars will take precedence.
+enableOpenaiApi: true
+openaiBaseApiUrl: ""
+openaiBaseApiUrls: []
+
+# -- This is the most critical section for integrating with your existing stack.
+extraEnvVars:
+  # -- Tells Open WebUI where to find the PostgreSQL database.
+  #    This secret and key will need to be created manually in your cluster.
+  #    It should contain the full connection string, e.g.,
+  #    postgresql://rag:YourPassword@cnpg-cluster-rw.default.svc.cluster.local:5432/rag_api
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: cnpg-rag-db-connection # Assumes a secret with this name exists
+        key: DATABASE_URL           # Assumes the secret has a key with this name
+  
+  # -- Configure RAG to use your existing KServe embedding service.
+  - name: RAG_EMBEDDING_ENGINE
+    value: "" # Set to empty to use the custom API URL directly.
+  - name: RAG_VECTOR_DB
+    # This instructs Open WebUI to use pgvector in the main PostgreSQL
+    # database instead of the default local ChromaDB.
+    value: "pgvector"
+  - name: RAG_EMBEDDING_API_URL
+    # This must point to your KServe InferenceService for the embedding model.
+    # The transformer you built will handle the protocol translation.
+    value: "http://embedding-minilm-l6-v2-transformer.kserve.svc.cluster.local"
+  - name: RAG_EMBEDDING_MODEL
+    # The name of the model to use from the embedding service.
+    value: "all-MiniLM-L6-v2"
+  - name: RAG_RERANKING_MODEL
+    # Disable reranking for the initial test to keep things simple.
+    value: ""
+
+  # -- Explicitly set a stable secret for signing and verifying JWTs.
+  #    This is critical for ensuring API authentication works reliably.
+  - name: JWT_SECRET
+    value: "a_very_strong_and_long_random_secret_string_for_jwt"
+
+  # -- Explicitly enable user sign-up on the login page.
+  - name: ENABLE_SIGNUP
+    value: "true"
+
+  # -- OpenTelemetry Configuration for LLM & Token Monitoring
+  - name: ENABLE_OTEL
+    value: "true"
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    # Use the gRPC endpoint (port 4317) without the http:// scheme
+    value: "otel-collector.default.svc.cluster.local:4317"
+  - name: OTEL_EXPORTER_OTLP_INSECURE
+    # Tell the client to use a plaintext connection
+    value: "true"
+  - name: OTEL_EXPORTER_OTLP_PROTOCOL
+    value: ""
+  - name: OTEL_SERVICE_NAME
+    value: "open-webui"
+  - name: OTEL_SERVICE_VERSION
+    value: "latest"
+  - name: OTEL_RESOURCE_ATTRIBUTES
+    value: "service.name=open-webui,service.version=latest,deployment.environment=production,k8s.cluster.name=mlops,component=llm-chat-interface"
+  
+  # -- Configure what telemetry to collect
+  - name: OTEL_PYTHON_DISABLED_INSTRUMENTATIONS
+    value: ""  # Enable all available instrumentations
+  - name: OTEL_PYTHON_LOG_CORRELATION
+    value: "true"
+  - name: OTEL_PYTHON_LOG_LEVEL
+    value: "info"
+  
+  # -- LLM-specific monitoring configuration
+  - name: ENABLE_LLM_METRICS
+    value: "true"
+  - name: ENABLE_TOKEN_USAGE_METRICS
+    value: "true"
+  - name: ENABLE_CHAT_METRICS
+    value: "true"
+
+extraEnvFrom: []
+runtimeClassName: ""
+volumeMounts: {}
+volumes: []
+podSecurityContext: {}
+containerSecurityContext: {}
+sso:
+  enabled: false
+  google: {}
+  microsoft: {}
+  github: {}
+  oidc: {}
+  roleManagement: {}
+  groupManagement: {}
+  trustedHeader: {}
+extraResources: []
+
+# -- Set to empty to use the external DATABASE_URL from extraEnvVars.
+databaseUrl: ""
+
+# -- Disabled because we are using an external CloudNativePG instance.
+postgresql:
+  enabled: false
+
+# -- Set logging to debug to get more verbose output during our tests.
+logging:
+  level: "debug"
+  components:
+    rag: "debug"
+    db: "debug"
+    main: "debug"
+    models: "debug"
+    ollama: "debug"
