@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui
+  labels:
+    app: open-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-webui
+  serviceName: "open-webui"
+  template:
+    metadata:
+      labels:
+        app: open-webui
+    spec:
+      volumes:
+      - name: shared-packages-volume
+        emptyDir: {}
+      initContainers:
+      - name: install-openlit
+        image: ghcr.io/open-webui/open-webui:main
+        command: ["/bin/sh", "-c", "pip install --target=/app/backend/packages openlit && echo 'OpenLIT installed'"]
+        volumeMounts:
+        - name: shared-packages-volume
+          mountPath: /app/backend/packages
+      containers:
+      - image: ghcr.io/open-webui/open-webui:main
+        name: open-webui
+        command: ["/bin/sh", "-c"]
+        args:
+          - "openlit run -- start_server.sh"
+        env:
+        - name: OLLAMA_BASE_URL
+          value: "http://ollama:11434"
+        - name: PYTHONPATH
+          value: "/app/backend/packages"
+        - name: ENABLE_OTEL
+          value: "true"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-collector:4317"
+        - name: OTEL_EXPORTER_OTLP_INSECURE
+          value: "true"
+        - name: OTEL_METRIC_EXPORT_INTERVAL
+          value: "5000"
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: open-webui-data
+          mountPath: /app/backend/data
+        - name: shared-packages-volume
+          mountPath: /app/backend/packages
+  volumeClaimTemplates:
+  - metadata:
+      name: open-webui-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
