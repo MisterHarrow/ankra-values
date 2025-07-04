@@ -1,0 +1,24 @@
+env:
+- name: CF_API_EMAIL
+  valueFrom:
+    secretKeyRef:
+      key: api-email
+      name: external-dns-cloudflare-secret
+- name: CF_API_KEY
+  valueFrom:
+    secretKeyRef:
+      key: api-key
+      name: external-dns-cloudflare-secret
+logLevel: info
+policy: sync
+provider:
+  name: cloudflare
+serviceMonitor:
+  additionalLabels:
+    release: kube-prometheus-stack
+  enabled: true
+  namespace: default
+sources:
+- ingress
+txtOwnerId: abensaistack1a
+txtPrefix: bensaistack
