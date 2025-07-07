@@ -83,7 +83,7 @@ extraEnvVars:
   
   # Additional Open WebUI optimizations
   - name: JWT_SECRET
-    value: "648a7f25606635a34a1f26e6db916b0c5beb27ca39f6c948821aea7bfbaa334a"
+    value: "65b4f8472fd58d4bfe7b45ee8b3a951df8eac8a7ed8197f976d71eebda23b7bf"
   - name: ENABLE_RAG_WEB_SEARCH
     value: "true"
   - name: RAG_WEB_SEARCH_ENGINE
