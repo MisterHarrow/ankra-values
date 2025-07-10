@@ -50,6 +50,10 @@ pipelines:
 
 # 3. Main Open WebUI configuration with RAG integration
 extraEnvVars:
+  # Route all LLM traffic through the telemetry pipeline
+  - name: OLLAMA_BASE_URL
+    value: "http://open-webui-pipelines:9099"
+
   # Default API key for pipelines
   - name: OPENAI_API_KEY
     value: "0p3n-w3bu!"
