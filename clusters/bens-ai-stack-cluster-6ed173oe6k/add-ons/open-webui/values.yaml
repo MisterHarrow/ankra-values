@@ -39,6 +39,17 @@ ollama:
 pipelines:
   enabled: true
   extraEnvVars:
+    # Register the backend Ollama model with the LiteLLM pipeline
+    - name: LITELLM_MODEL_LIST
+      value: >-
+        [
+          {
+            "model_name": "qwen3:latest",
+            "litellm_params": {
+              "model": "ollama/qwen3:latest"
+            }
+          }
+        ]
     # Add this line to tell the pipeline where to forward requests
     - name: OLLAMA_BASE_URL
       value: "http://open-webui-ollama:11434"
