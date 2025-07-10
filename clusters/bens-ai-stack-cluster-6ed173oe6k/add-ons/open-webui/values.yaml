@@ -1,41 +1,7 @@
-# Helm values for Open WebUI, applied by Ankra/ArgoCD.
+ # Helm values for Open WebUI, applied by Ankra/ArgoCD.
 # This file is the single source of truth for our overrides.
 
-# 1. Enable embedded Ollama with qwen3 model
-ollama:
-  enabled: true
-  fullnameOverride: "open-webui-ollama"
-  gpu:
-    enabled: true
-    type: 'nvidia'
-    number: 1
-  models:
-    pull:
-      - qwen3:latest
-    run:
-      - qwen3:latest
-  persistentVolume:
-    enabled: true
-    size: 50Gi
-  resources:
-    requests:
-      memory: 4Gi
-      cpu: 1
-    limits:
-      memory: 8Gi
-      cpu: 2
-      nvidia.com/gpu: 1
-  lifecycle:
-    postStart:
-      exec:
-        command:
-          - /bin/sh
-          - -c
-          - |
-            sleep 15
-            ollama pull qwen3:latest
-
-# 2. Enable pipelines for OpenLIT integration
+# 1. Enable pipelines for OpenLIT integration
 pipelines:
   enabled: true
   extraEnvVars:
@@ -51,7 +17,7 @@ pipelines:
     - name: OTEL_METRICS_EXPORTER
       value: "otlp_http"
 
-# 3. Main Open WebUI configuration with RAG integration
+# 2. Main Open WebUI configuration with RAG integration
 extraEnvVars:
   # Route all LLM traffic through the telemetry pipeline
   - name: OLLAMA_BASE_URL
@@ -102,13 +68,13 @@ extraEnvVars:
   - name: RAG_WEB_SEARCH_ENGINE
     value: "duckduckgo"
 
-# 4. Standard image configuration
+# 3. Standard image configuration
 image:
   repository: ghcr.io/open-webui/open-webui
   tag: ""
   pullPolicy: "IfNotPresent"
 
-# 5. Persistent volume for RAG file staging
+# 4. Persistent volume for RAG file staging
 persistence:
   enabled: true
   size: 50Gi
