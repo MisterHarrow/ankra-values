@@ -39,6 +39,9 @@ ollama:
 pipelines:
   enabled: true
   extraEnvVars:
+    # Add this line to tell the pipeline where to forward requests
+    - name: OLLAMA_BASE_URL
+      value: "http://open-webui-ollama:11434"
     - name: OTEL_EXPORTER_OTLP_ENDPOINT
       value: "http://otel-collector:4318"
     - name: OTEL_SERVICE_NAME
