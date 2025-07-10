@@ -1,54 +1,7 @@
  # Helm values for Open WebUI, applied by Ankra/ArgoCD.
 # This file is the single source of truth for our overrides.
 
-# 1. Define extra Kubernetes objects, like our Modelfile ConfigMap
-extraManifests:
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: open-webui-modelfile
-    data:
-      Modelfile: |
-        FROM qwen3:latest
-        ADAPTER http://open-webui-pipelines:9099
-
-# 2. Add an initContainer to create the model on startup
-initContainers:
-  - name: wait-for-ollama
-    image: curlimages/curl:8.8.0
-    command:
-      - /bin/sh
-      - -c
-      - |
-        echo "Waiting for Ollama API server..."
-        until curl -s -f http://open-webui-ollama:11434/; do
-          echo "Ollama not responding, retrying in 5 seconds..."
-          sleep 5
-        done
-        echo "Ollama is ready."
-  - name: create-pipeline-model
-    image: ghcr.io/open-webui/open-webui:main
-    command:
-      - /bin/sh
-      - -c
-      - |
-        echo "Creating telemetry pipeline model..."
-        ollama create qwen3:pipeline -f /modelfile/Modelfile
-        echo "Pipeline model created successfully."
-    env:
-      - name: OLLAMA_BASE_URL
-        value: "http://open-webui-ollama:11434"
-    volumeMounts:
-      - name: modelfile-volume
-        mountPath: /modelfile
-
-# 3. Add the volume for the ConfigMap
-extraVolumes:
-  - name: modelfile-volume
-    configMap:
-      name: open-webui-modelfile
-
-# 4. Enable pipelines for OpenLIT integration
+# 1. Enable pipelines for OpenLIT integration
 pipelines:
   enabled: true
   extraEnvVars:
@@ -64,11 +17,11 @@ pipelines:
     - name: OTEL_METRICS_EXPORTER
       value: "otlp_http"
 
-# 5. Main Open WebUI configuration with RAG integration
+# 2. Main Open WebUI configuration with RAG integration
 extraEnvVars:
-  # Connection to the standalone Ollama instance
+  # Route all LLM traffic through the telemetry pipeline
   - name: OLLAMA_BASE_URL
-    value: "http://open-webui-ollama:11434"
+    value: "http://open-webui-pipelines:9099"
 
   # Default API key for pipelines
   - name: OPENAI_API_KEY
@@ -115,13 +68,13 @@ extraEnvVars:
   - name: RAG_WEB_SEARCH_ENGINE
     value: "duckduckgo"
 
-# 6. Standard image configuration
+# 3. Standard image configuration
 image:
   repository: ghcr.io/open-webui/open-webui
   tag: ""
   pullPolicy: "IfNotPresent"
 
-# 7. Persistent volume for RAG file staging
+# 4. Persistent volume for RAG file staging
 persistence:
   enabled: true
   size: 50Gi
