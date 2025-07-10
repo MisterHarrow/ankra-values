@@ -69,7 +69,7 @@ extraEnvVars:
     value: "duckduckgo"
 
 # 3. Create the telemetry pipeline model on startup
-lifecycle:
+lifecycleHooks:
   postStart:
     exec:
       command:
