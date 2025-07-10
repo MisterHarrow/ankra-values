@@ -123,7 +123,7 @@ namespaceOverride: ""
 tika:
   enabled: false
 
-ollamaUrlsFromExtraEnv: false
+ollamaUrlsFromExtraEnv: true
 
 websocket:
   enabled: false
