@@ -43,6 +43,10 @@ pipelines:
       value: "http://otel-collector:4318"
     - name: OTEL_SERVICE_NAME
       value: "open-webui-pipelines"
+    - name: OTEL_TRACES_EXPORTER
+      value: "otlp_http"
+    - name: OTEL_METRICS_EXPORTER
+      value: "otlp_http"
 
 # 3. Main Open WebUI configuration with RAG integration
 extraEnvVars:
