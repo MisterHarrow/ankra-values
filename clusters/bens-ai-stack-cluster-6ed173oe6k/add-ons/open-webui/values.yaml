@@ -1,4 +1,4 @@
-# Helm values for Open WebUI, applied by Ankra/ArgoCD.
+ # Helm values for Open WebUI, applied by Ankra/ArgoCD.
 # This file is the single source of truth for our overrides.
 
 # 1. Enable embedded Ollama with qwen3 model
@@ -10,6 +10,11 @@ ollama:
     type: 'nvidia'
     number: 1
   models:
+    create:
+      - name: "qwen3:pipeline"
+        modelfile: |
+          FROM qwen3:latest
+          ADAPTER http://open-webui-pipelines:9099
     pull:
       - qwen3:latest
     run:
@@ -53,10 +58,6 @@ pipelines:
 
 # 3. Main Open WebUI configuration with RAG integration
 extraEnvVars:
-  # Route all LLM traffic through the telemetry pipeline
-  - name: OLLAMA_BASE_URL
-    value: "http://open-webui-pipelines:9099"
-
   # Default API key for pipelines
   - name: OPENAI_API_KEY
     value: "0p3n-w3bu!"
