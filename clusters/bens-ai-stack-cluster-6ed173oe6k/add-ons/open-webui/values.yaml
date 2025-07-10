@@ -63,9 +63,11 @@ extraEnvVars:
     value: "http://otel-collector:4318"
   - name: OTEL_SERVICE_NAME
     value: "open-webui"
-  - name: ENABLE_OTEL
-    value: "true"
-  
+  - name: OTEL_TRACES_EXPORTER
+    value: "otlp_http"
+  - name: OTEL_METRICS_EXPORTER
+    value: "otlp_http"
+
   # Database connection from secret
   - name: DATABASE_URL
     valueFrom:
@@ -271,7 +273,7 @@ postgresql:
     resources:
       requests:
         memory: 256Mi
-        cpu: 300m
+        cpu: 250m
       limits:
         memory: 512Mi
         cpu: 500m
