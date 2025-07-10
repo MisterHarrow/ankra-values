@@ -53,6 +53,9 @@ pipelines:
 
 # 3. Main Open WebUI configuration with RAG integration
 extraEnvVars:
+  # Override the chart's auto-injected direct Ollama URL to prevent bypassing the pipeline.
+  - name: OLLAMA_BASE_URLS
+    value: ""
   # Route all LLM traffic through the telemetry pipeline
   - name: OLLAMA_BASE_URL
     value: "http://open-webui-pipelines:9099"
