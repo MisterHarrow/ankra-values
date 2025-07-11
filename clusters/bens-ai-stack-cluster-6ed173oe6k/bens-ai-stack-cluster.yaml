@@ -11,7 +11,6 @@ spec:
     repository: MisterHarrow/ankra-values
   stacks:
   - name: UI-AI-STACK
-    description: ''
     manifests:
     - name: open-webui-db-secret
       parents:
@@ -42,7 +41,6 @@ spec:
       configuration_type: standalone
       configuration:
         from_file: add-ons/cloudnative-pg/values.yaml
-      parents: []
     - name: opentelemetry-collector
       chart_name: opentelemetry-collector
       chart_version: 0.127.2
@@ -62,7 +60,6 @@ spec:
       configuration_type: standalone
       configuration:
         from_file: add-ons/cert-manager/values.yaml
-      parents: []
     - name: kube-prometheus-stack
       chart_name: kube-prometheus-stack
       chart_version: 75.7.0
@@ -71,7 +68,6 @@ spec:
       configuration_type: standalone
       configuration:
         from_file: add-ons/kube-prometheus-stack/values.yaml
-      parents: []
     - name: ingress-nginx
       chart_name: ingress-nginx
       chart_version: 4.12.3
@@ -80,7 +76,6 @@ spec:
       configuration_type: standalone
       configuration:
         from_file: add-ons/ingress-nginx/values.yaml
-      parents: []
     - name: knative-operator
       chart_name: knative-operator
       chart_version: v1.18.1
@@ -89,7 +84,6 @@ spec:
       configuration_type: standalone
       configuration:
         from_file: add-ons/knative-operator/values.yaml
-      parents: []
     - name: kserve-crd
       chart_name: kserve-crd
       chart_version: v0.15.2
@@ -123,14 +117,3 @@ spec:
       parents:
       - name: cloudnative-pg
         kind: addon
-    - name: open-webui
-      chart_name: open-webui
-      chart_version: 6.22.0
-      repository_url: https://helm.openwebui.com
-      namespace: default
-      configuration_type: standalone
-      configuration:
-        from_file: add-ons/open-webui/values.yaml
-      parents:
-      - name: open-webui-db-secret
-        kind: manifest
