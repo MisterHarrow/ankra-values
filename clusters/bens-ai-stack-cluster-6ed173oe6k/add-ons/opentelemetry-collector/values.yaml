@@ -134,6 +134,11 @@ config:
   
   processors:
     batch: {}
+    transform:
+      metric_statements:
+        - context: metric
+          statements:
+            - set(description, "Measures the number of LLM requests.") where name == "llm.requests"
     # Default memory limiter configuration for the collector based on k8s resource limits.
     memory_limiter:
       # check_interval is the time between measurements of memory usage.
@@ -227,6 +232,7 @@ config:
           - prometheus
           - debug
         processors:
+          - transform
           - memory_limiter
           - batch
         receivers:
