@@ -16,7 +16,7 @@ ollama:
       - qwen3:latest
   persistentVolume:
     enabled: true
-    size: 50Gi
+    size: 51Gi
   resources:
     requests:
       memory: 4Gi
