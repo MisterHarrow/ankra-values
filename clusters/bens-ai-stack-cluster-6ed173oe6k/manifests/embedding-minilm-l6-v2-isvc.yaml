@@ -1,0 +1,76 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "embedding-minilm-l6-v2"
+  namespace: kserve                # Or 'default', or your preferred ml-services namespace
+  annotations:
+    # Add Knative scaling annotations
+    autoscaling.knative.dev/minScale: "0"  # Allow scaling to zero
+    autoscaling.knative.dev/maxScale: "10" # Set a reasonable max scale
+    autoscaling.knative.dev/target: "20"  # Target concurrency
+spec:
+  predictor:
+    annotations:
+      autoscaling.knative.dev/minScale: "0"
+      autoscaling.knative.dev/maxScale: "10"
+      autoscaling.knative.dev/target: "20"
+    # Remove minReplicas to allow scale-to-zero
+    # Ensure the predictor runs on a GPU node
+    nodeSelector:
+      cloud.google.com/gke-accelerator: nvidia-l4
+    tolerations:
+    - key: "nvidia.com/gpu"
+      operator: "Exists"
+      effect: "NoSchedule"
+    model: # This is the KServe v0.10+ model spec structure
+      modelFormat:
+        name: huggingface
+      # protocolVersion: "v2" # DELETED: This was conflicting with the openai protocol arg
+      # The 'args' field is how parameters are passed to the huggingfaceserver runtime
+      args:
+        - "--model_id"
+        - "sentence-transformers/all-MiniLM-L6-v2"
+        - "--model_revision" # Pinning to a specific revision is good practice
+        - "8b3219a92973c328a8e22fadcfa821b5dc75636a"
+        # --tokenizer_revision is often the same as model_revision for sentence transformers
+        - "--tokenizer_revision"
+        - "8b3219a92973c328a8e22fadcfa821b5dc75636a"
+        - "--task"
+        - "text_embedding" # Explicitly setting the task
+        - "--backend"      # This ensures KServe uses the HF optimized server
+        - "huggingface"
+      resources: # Define appropriate resources
+        requests:
+          cpu: "0.5" # Start with this, monitor and adjust
+          memory: "2Gi"
+          nvidia.com/gpu: "1"
+        limits:
+          cpu: "1"
+          memory: "4Gi"
+          nvidia.com/gpu: "1"
+      # Note: The runtime image (kserve/huggingfaceserver:v0.15.2) is implicitly used
+      # because 'modelFormat.name: huggingface' maps to the default HuggingFace runtime
+      # configured in your KServe installation.
+
+  # --- NEW TRANSFORMER SECTION ---
+  # This section intercepts requests, transforms them, and forwards to the predictor.
+  transformer:
+    annotations:
+      autoscaling.knative.dev/minScale: "0"
+      autoscaling.knative.dev/maxScale: "10"
+      autoscaling.knative.dev/target: "20"
+      restartedAt: "2025-06-09T14:30:00Z"
+    # Use the secret we created to pull the image from GHCR
+    imagePullSecrets:
+      - name: ghcr-secret
+    containers:
+      - image: ghcr.io/misterharrow/kserve-embedding-transformer:v0.1.0
+        imagePullPolicy: Always
+        name: kserve-container # This name is required by KServe
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"

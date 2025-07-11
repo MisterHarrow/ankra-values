@@ -1,0 +1,22 @@
+# knative-serving-cr.yaml
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeServing
+metadata:
+  name: knative-serving
+  namespace: knative-operator
+spec:
+  ingress:
+    kourier:
+      enabled: true
+  config:
+    # This section maps to the 'config-network' ConfigMap
+    network:
+      ingress-class: "kourier.ingress.networking.knative.dev"
+
+    # This section maps to the 'config-domain' ConfigMap
+    domain: {}
+
+    features:
+      # These are the two keys we need to change to 'enabled'
+      kubernetes.podspec-nodeselector: "enabled"
+      kubernetes.podspec-tolerations: "enabled"

@@ -1,0 +1,75 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-cluster
+  namespace: cloudnative-pg
+spec:
+  instances: 1 # For a simple setup, 3 for HA
+  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.3-v0.2.1
+
+  storage:
+    size: 10Gi
+    storageClass: standard
+  bootstrap:
+    initdb:
+      database: rag_db
+      owner: rag_user
+      postInitSQL:
+        - "ALTER SYSTEM SET search_path TO \"$user\", public, vectors;"
+        - "CREATE EXTENSION IF NOT EXISTS \"vectors\";"
+        - "CREATE DATABASE jupyterhub_db WITH OWNER jupyterhub_user;"
+  managed:
+    roles:
+      - name: rag_user # CNPG creates this user and its secret.
+        ensure: present
+        login: true
+      - name: jupyterhub_user # This will create the user and a secret
+        ensure: present
+        login: true
+
+
+  # Enable pgvector extension
+  # This requires the PostgreSQL image to have pgvector pre-installed.
+  # The image ghcr.io/cloudnative-pg/postgresql usually includes common extensions.
+  # For pgvector specifically, an image like `ghcr.io/cloudnative-pg/postgresql:<version>-pgvector` might be needed
+  # or you might need to ensure your selected image contains it.
+  # The official CNPG docs/community would have the latest on best pgvector image.
+  #
+  # An alternative for extensions is to use postInitApplicationSQL or postInitSQL scripts.
+  #
+  # If using a standard image, you might need to create the extension manually after cluster creation
+  # or use a post-init script. However, CNPG has evolving support for extensions.
+
+  # For enabling extensions like pgvector, it's often done by running SQL commands
+  # after the database is initialized. You can use `postInitApplicationSQL`.
+  # Ensure the user ('postgres' or your app user) has permission to create extensions.
+  # postInitApplicationSQL:
+  #   - CREATE EXTENSION IF NOT EXISTS vector;
+  # - CREATE EXTENSION IF NOT EXISTS pg_stat_statements; # Example of another useful extension
+
+  # Expose the cluster with a service
+  # CNPG creates services by default. The primary service is usually <cluster-name>-rw
+  # You can customize service annotations or types if needed.
+
+  # Monitoring (if you have Prometheus operator installed)
+  monitoring:
+    enablePodMonitor: true # If you set up Prometheus Operator
+
+  # Backup Configuration (Example from ankra-mlops-db-cluster.yaml, adjust as needed)
+  # If you are using 'librechat-pg-cluster', you might not need this elaborate backup yet,
+  # or you can adapt it.
+  # backup:
+  #   barmanObjectStore:
+  #     destinationPath: "gs://ankra_ml_bucket/your-cluster-name-backups/" # IMPORTANT: Use unique path per cluster
+  #     googleCredentials:
+  #       gkeEnvironment: true
+  #   retentionPolicy: "7d" # Keep backups for 7 days
+
+  # PostgreSQL Configuration (pg_hba.conf example)
+  postgresql:
+    pg_hba:
+      - host all librechat_user all md5 # Allow librechat_user to connect from anywhere with md5
+      - host all postgres all md5        # Allow postgres user (superuser)
+      # You might want to restrict 'all' to specific IPs or use 'samehost' if appropriate
+    shared_preload_libraries:
+      - "vectors.so"
