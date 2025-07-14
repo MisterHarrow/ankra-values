@@ -41,17 +41,6 @@ spec:
       configuration_type: standalone
       configuration:
         from_file: add-ons/cloudnative-pg/values.yaml
-    - name: opentelemetry-collector
-      chart_name: opentelemetry-collector
-      chart_version: 0.127.2
-      repository_url: https://open-telemetry.github.io/opentelemetry-helm-charts
-      namespace: default
-      configuration_type: standalone
-      configuration:
-        from_file: add-ons/opentelemetry-collector/values.yaml
-      parents:
-      - name: kube-prometheus-stack
-        kind: addon
     - name: cert-manager
       chart_name: cert-manager
       chart_version: v1.18.2
@@ -68,14 +57,17 @@ spec:
       configuration_type: standalone
       configuration:
         from_file: add-ons/kube-prometheus-stack/values.yaml
-    - name: ingress-nginx
-      chart_name: ingress-nginx
-      chart_version: 4.12.3
-      repository_url: https://kubernetes.github.io/ingress-nginx
-      namespace: ingress-nginx
+    - name: jupyterhub
+      chart_name: jupyterhub
+      chart_version: 4.2.1-0.dev.git.7042.h294a43d1
+      repository_url: https://jupyterhub.github.io/helm-chart
+      namespace: jupyterhub
       configuration_type: standalone
       configuration:
-        from_file: add-ons/ingress-nginx/values.yaml
+        from_file: add-ons/jupyterhub/values.yaml
+      parents:
+      - name: cloudnative-pg
+        kind: addon
     - name: knative-operator
       chart_name: knative-operator
       chart_version: v1.18.1
@@ -106,25 +98,22 @@ spec:
       parents:
       - name: kserve-crd
         kind: addon
-    - name: jupyterhub
-      chart_name: jupyterhub
-      chart_version: 4.2.1-0.dev.git.7042.h294a43d1
-      repository_url: https://jupyterhub.github.io/helm-chart
-      namespace: jupyterhub
-      configuration_type: standalone
-      configuration:
-        from_file: add-ons/jupyterhub/values.yaml
-      parents:
-      - name: cloudnative-pg
-        kind: addon
-    - name: open-webui
-      chart_name: open-webui
-      chart_version: 6.22.0
-      repository_url: https://helm.openwebui.com
+    - name: opentelemetry-collector
+      chart_name: opentelemetry-collector
+      chart_version: 0.127.2
+      repository_url: https://open-telemetry.github.io/opentelemetry-helm-charts
       namespace: default
       configuration_type: standalone
       configuration:
-        from_file: add-ons/open-webui/values.yaml
+        from_file: add-ons/opentelemetry-collector/values.yaml
       parents:
-      - name: open-webui-db-secret
-        kind: manifest
+      - name: kube-prometheus-stack
+        kind: addon
+    - name: ingress-nginx
+      chart_name: ingress-nginx
+      chart_version: 4.12.3
+      repository_url: https://kubernetes.github.io/ingress-nginx
+      namespace: ingress-nginx
+      configuration_type: standalone
+      configuration:
+        from_file: add-ons/ingress-nginx/values.yaml
